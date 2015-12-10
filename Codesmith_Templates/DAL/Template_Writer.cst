@@ -16,9 +16,9 @@ using Giftango.Component.Utility;
 
 namespace <%= Namespace %>
 {
-    public class <%= ModelName%>Writer(<%= ModelName%> modelToWrite)
+    public class <%= ModelName%>Writer()
     {
-        public int Write<%= ModelName%>()
+        public int Write<%= ModelName%>(<%= ModelName%> modelToWrite)
         {
             using (var connection = ConnectionHelper.GetConnection())
             {

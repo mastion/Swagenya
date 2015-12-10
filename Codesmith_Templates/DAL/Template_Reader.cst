@@ -1,0 +1,34 @@
+﻿<%-- 
+Name:
+Author: 
+Description: 
+--%>
+<%@ Template Language="C#" TargetLanguage="Text" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Property Name="Namespace" Type="System.String" Optional="False" Category="Context" Description="The namespace of the generated class" %>
+<%@ Property Name="ModelName" Type="System.String" Optional="False" %>
+
+using System.Data;
+using System.Linq;
+using Dapper;
+using Giftango.Component.Utility;
+
+namespace <%= Namespace %>
+{
+    public class <%= ModelName%>Reader()
+    {
+        public <%= ModelName%> GetAll<%= ModelName%>()
+        {
+            using (var connection = ConnectionHelper.GetConnection())
+            {
+                return connection.Query<<%= ModelName%>>("[dbo].[GetAll<%= ModelName%>]", commandType: CommandType.StoredProcedure).First();
+            }
+        }
+    }
+
+}
+
+
+
+
+
