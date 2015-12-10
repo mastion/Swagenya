@@ -1,0 +1,93 @@
+﻿<%@ CodeTemplate Debug="False" Language="C#" TargetLanguage="T-SQL" %>
+
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Text.RegularExpressions" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+
+CREATE PROCEDURE <%= GetInsertProcedureName() %>
+<% GenerateParameters(FilterReadOnlyAndExcludedColumns(SourceTable.NonPrimaryKeyColumns), 1, true, false); %>
+<% GenerateParameter(primaryKeyColumn, 1, false, true, true, false); %>
+AS
+
+SET NOCOUNT ON
+
+<%-- If the primary key is a GUID, then assign a new GUID using NEWID(). --%>
+<% if (primaryKeyColumn.DataType == DbType.Guid) { %>
+SET @<%= primaryKeyColumn.Name %> = NEWID()
+
+<% } %>
+INSERT INTO <%= GetTableOwner() %>[<%= SourceTable.Name %>] (
+	<% if (primaryKeyColumn.DataType == DbType.Guid) { %>
+	[<%= primaryKeyColumn.Name %>],
+	<% } %>
+	<% GenerateColumns(FilterReadOnlyAndExcludedColumns(SourceTable.NonPrimaryKeyColumns), 1, false); %>
+) VALUES (
+	<% if (primaryKeyColumn.DataType == DbType.Guid) { %>
+	@<%= primaryKeyColumn.Name %>,
+	<% } %>
+	<% GenerateVariables(FilterReadOnlyAndExcludedColumns(SourceTable.NonPrimaryKeyColumns), 1, false); %>
+)
+<%-- If the primary key is an identity column, then capture the newly assigned identity using SCOPE_IDENTITY(). --%>
+<% if (primaryKeyColumn.DataType == DbType.Int16 || primaryKeyColumn.DataType == DbType.Int32 || primaryKeyColumn.DataType == DbType.Int64) { %>
+
+SET @<%= primaryKeyColumn.Name %> = SCOPE_IDENTITY()
+<% } %>
+
+<%-- Primary key is not a identity column or a GUID, so include all columns as input parameters. --%>
+<% } else { %>
+
+CREATE PROCEDURE <%= GetInsertProcedureName() %>
+<% GenerateParameters(FilterReadOnlyAndExcludedColumns(SourceTable.Columns), 1, false); %>
+AS
+
+SET NOCOUNT ON
+
+INSERT INTO <%= GetTableOwner() %>[<%= SourceTable.Name %>] (
+	<% GenerateColumns(SourceTable.Columns, 1, false); %>
+) VALUES (
+	<% GenerateVariables(SourceTable.Columns, 1, false); %>
+)
+
+<%
+	}
+	GenerateProcedureFooter(GetInsertProcedureName());
+	this.Progress.PerformStep();
+}
+%>
+
+<script runat="template">
+public string GetInsertProcedureName()
+{
+	return String.Format("{0}[{1}Insert{2}]", GetTableOwner(), ProcedurePrefix, GetEntityName(false));
+}
+
+public void GenerateParameters(IList<MemberColumnSchema> columns, int indentLevel, bool includeTimeStamp)
+{
+    GenerateParameters(ConvertMemberColumnSchemaToColumnSchema(columns), indentLevel, false, includeTimeStamp);
+}
+public List<ColumnSchema> FilterReadOnlyAndExcludedColumns(IList<ColumnSchema> columns)
+{
+    return columns.Where(c => !ColumnIsExcludedOrReadOnly(c)).ToList();
+}
+public string GetTableOwner()
+{
+	return GetTableOwner(true);
+}
+
+public void GenerateColumns(IList<MemberColumnSchema> columns, int indentLevel, bool includeTimeStamp)
+{
+    GenerateColumns(ConvertMemberColumnSchemaToColumnSchema(columns), indentLevel, includeTimeStamp);
+}
+
+public void GenerateColumns(IList<ColumnSchema> columns, int indentLevel, bool includeTimeStamp)
+{
+    foreach(var column in FilterExcludedColumns(columns).AsIndexedEnumerable())
+	{
+		GenerateColumn(column.Value, indentLevel, column.IsFirst, column.IsLast, includeTimeStamp);
+	}
+}
+public string GetInsertProcedureName()
+{
+	return String.Format("{0}[{1}Insert{2}]", GetTableOwner(), ProcedurePrefix, GetEntityName(false));
+}
+</script>

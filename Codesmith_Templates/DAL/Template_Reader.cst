@@ -17,7 +17,7 @@ namespace <%= Namespace %>
 {
     public class <%= ModelName%>Reader()
     {
-        public <%= ModelName%> GetAll<%= ModelName%>()
+        public List<<%= ModelName%>> GetAll<%= ModelName%>()
         {
             using (var connection = ConnectionHelper.GetConnection())
             {
