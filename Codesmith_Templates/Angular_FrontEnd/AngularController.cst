@@ -34,6 +34,8 @@ function <%=AngularControllerName%>($scope, <%=AngularServiceName%>) {
         document.getElementById('add<%=ModelName%>').innerHTML = htmlToInsert;
         
     }
+    
+    //We probably also want $scope.initializeRemove<%=ModelName%>
 };
 
 angular.module("<%=AngularAppName%>")
