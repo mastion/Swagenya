@@ -1,34 +1,30 @@
 using System;
 using System.Configuration;
-using System.IO;
 using System.Text;
+using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
 {
     public class AngularGenerator
     {
-        private string _outputDirectory;
-        private string _modelType;
-        private EndpointSpec _endpointSpecification;
-        private IFileWriter _fileWriter;
+        private readonly string _outputDirectory;
+        private readonly string _modelType;
+        private readonly EndpointSpec _endpointSpecification;
+        private readonly IFileWriter _fileWriter;
 
         public AngularGenerator(EndpointSpec endpointSpecification, string modelType)
         {
             _fileWriter = new FileWriter();
             _endpointSpecification = endpointSpecification;
             _modelType = modelType;
-            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js");
+            _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("js"));
         }
 
         public void Generate()
         {
-            //Create the Angular App
             GenerateAngularApp();
-            //Create the Angular Service
             GenerateAngularService();
-            //Create the Angular Controller
             GenerateAngularController();
-            //Create the Angular Model
             GenerateAngularModel();
 
         }
@@ -47,7 +43,20 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}"))
+            builder.AppendLine(String.Format("function {0}Controller($scope, {0}Service) {{", _modelType));
+            builder.AppendLine(String.Format("  $scope.add{0} = function() {{", _modelType));
+            builder.AppendLine(String.Format("      {0}Service", _modelType));
+            builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", _modelType));
+            builder.AppendLine(String.Format("          .then(function (response) {{"));
+            builder.AppendLine(String.Format("              $scope.active{0}s.push(new {0}(response.data);"));
+            builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", _modelType));
+            builder.AppendLine(String.Format("          }}, function (error) {{"));
+            builder.AppendLine(String.Format("              $scope.ErrorMessage = 'Error adding the new {0}';", _modelType));
+            builder.AppendLine(String.Format("          }});"));
+            builder.AppendLine(String.Format("  }};"));
+            builder.AppendLine(String.Format("}};"));
+            builder.AppendLine(String.Format("angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);", _modelType));
+
             
             
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
