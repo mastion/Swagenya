@@ -17,8 +17,7 @@ namespace ApiGeneratorApi.Models
             _fileWriter = new FileWriter();
             _endpointSpecification = endpointSpecification;
             _modelType = modelType;
-            _outputDirectory = new FolderWriter().GetFolderName("js");
-                //String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js"));
+            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js");
         }
 
         public void Generate()
@@ -48,10 +47,16 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine(String.Format("'use strict'"));
             builder.AppendLine(String.Format("function {0}"));
+<<<<<<< HEAD
 
 
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType),
                 builder.ToString());
+=======
+            
+            
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+>>>>>>> 494d9360135b0b7135ee3175035f7080bcb8e370
         }
 
         private void GenerateAngularService()

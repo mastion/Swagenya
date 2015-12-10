@@ -1,18 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text;
-using System.Web.Configuration;
 
 namespace ApiGeneratorApi.Models
 {
     public class WebApiGenerator
     {
-        private readonly List<EndpointSpec> _apiSpecification;
-
         public readonly string FilePath;
+        private readonly List<EndpointSpec> _apiSpecification;
 
         public WebApiGenerator(EndpointSpec apiSpecification)
         {
@@ -26,7 +21,8 @@ namespace ApiGeneratorApi.Models
 
         public void Generate()
         {
-            foreach (var endpointList in _apiSpecification.GroupBy(x => x.Uri).Select(endpointSpec => endpointSpec.ToList()))
+            foreach (
+                var endpointList in _apiSpecification.GroupBy(x => x.Uri).Select(endpointSpec => endpointSpec.ToList()))
             {
                 GenerateController(endpointList);
             }
@@ -38,7 +34,7 @@ namespace ApiGeneratorApi.Models
         {
             var builder = new StringBuilder();
 
-            var modelType = _apiSpecification.First(x => x.Uri != null).Uri;
+            string modelType = _apiSpecification.First(x => x.Uri != null).Uri;
 
             builder.AppendLine(GenerateControllerHeader(modelType));
 
@@ -135,7 +131,6 @@ namespace ApiGeneratorApi.Models
             }
 
             builder.AppendLine(GenerateWebConfigFooter());
-
         }
 
         private static string GenerateWebConfigHeader()
