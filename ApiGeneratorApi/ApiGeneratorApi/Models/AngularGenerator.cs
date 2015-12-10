@@ -1,16 +1,16 @@
 using System;
 using System.Configuration;
-using System.IO;
 using System.Text;
+using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
 {
     public class AngularGenerator
     {
-        private string _outputDirectory;
-        private string _modelType;
-        private EndpointSpec _endpointSpecification;
-        private IFileWriter _fileWriter;
+        private readonly EndpointSpec _endpointSpecification;
+        private readonly IFileWriter _fileWriter;
+        private readonly string _modelType;
+        private readonly string _outputDirectory;
 
         public AngularGenerator(EndpointSpec endpointSpecification, string modelType)
         {
@@ -30,7 +30,6 @@ namespace ApiGeneratorApi.Models
             GenerateAngularController();
             //Create the Angular Model
             GenerateAngularModel();
-
         }
 
         private void GenerateAngularModel()
@@ -47,10 +46,11 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}"))
-            
-            
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+            builder.AppendLine(String.Format("function {0}"));
+
+
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType),
+                builder.ToString());
         }
 
         private void GenerateAngularService()
@@ -68,7 +68,6 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine(String.Format("}}"));
             builder.AppendLine(String.Format("angular.module('{0}').service('{0}Service', ['$http', {0}Service]);",
                 _modelType));
-
 
 
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType), builder.ToString());
