@@ -1,0 +1,18 @@
+﻿<%@ Template Language="JavaScript" TargetLanguage="HTML"%>
+<%@ Property Name="AngularAppName" Type="System.String" Default="SampleApp" Description="This is the name of the angular app that will drive the view for this resource"%>
+<%@ Property Name="AngularControllerName" Type="System.String"  Default="SampleControllerName" Description="This is the name of the angular controller that will drive this markup" %>
+<%@ Property Name="ModelName" Type="System.String" Default="SampleModel" Description="This is the name of the model that this page is meant to represent" %>
+
+
+<div class="sftpsync-container" ng-app="<%=AngularAppName%>" ng-controller="<%=AngularControllerName%>">
+    <h3>
+        <%=ModelName%> Tool
+    </h3>
+    <h4>
+        Below are the active <%=ModelName%>s:
+    </h4>
+    <div ng-bind="ErrorMessage" ng-show="ErrorMessage"></div>
+    <div id="add<%=ModelName%>" ng-init="initializeAdd<%=ModelName%>()">
+    
+    </div>
+</div>

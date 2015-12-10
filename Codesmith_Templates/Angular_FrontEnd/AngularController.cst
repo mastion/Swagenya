@@ -10,14 +10,30 @@ function <%=AngularControllerName%>($scope, <%=AngularServiceName%>) {
         <%=AngularServiceName%>
             .add<%=ModelName%>($scope.<%=ModelName%>ToAdd)
             .then(function (response) {
-                //Gotta change this line to behave with the service a little better            
-                $scope.active<%=ModelName%>s.push($scope.<%=ModelName%>ToAdd);
+                $scope.active<%=ModelName%>s.push(new <%=ModelName%>(response.data));
 
                 $scope.<%=ModelName%>ToAdd = {};
             }, function (error) {
                 $scope.ErrorMessage = 'Error adding the new <%=ModelName%>';
             });
     };
+    
+    $scope.initializeAdd<%=ModelName%> = function(){
+        $scope.<%=ModelName%>ToAdd = new <%=ModelName%>();
+        
+        var htmlToInsert = "";
+        
+        for (var key in <%=ModelName%>ToAdd){
+            if (<%=ModelName%>ToAdd.hasOwnProperty(key)){
+                htmlToInsert = htmlToInsert + '<div id="<%=ModelName%>ToAdd'+key+'">'+key+' : '+eval('<%=ModelName%>.'+key)+'</div> \n';
+            }
+        }
+        
+        htmlToInsert = htmlToInsert + '<button ng-click="add<%=ModelName%>()">Submit</button> \n';
+        
+        document.getElementById('add<%=ModelName%>').innerHTML = htmlToInsert;
+        
+    }
 };
 
 angular.module("<%=AngularAppName%>")
