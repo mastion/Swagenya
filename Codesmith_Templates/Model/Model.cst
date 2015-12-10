@@ -1,0 +1,58 @@
+﻿<%-- 
+Name:
+Author: 
+Description: 
+--%>
+<%@ Template Language="C#" TargetLanguage="Text" %>
+<%@ Import Namespace="System.Text"  %>
+<%@ Import Namespace="System.Collections.Generic"  %>
+
+<%@ Property Name="ModelName" Default="myModel" Type="System.String" %>
+<%@ Property Name="JsonModel" Default="" Type="System.String" %>
+
+namespace Giftango.Domain.Models
+{
+    public class <%= ModelName %>
+    {
+    <%-- Write Properties --%>
+    <%WriteProperties();%>
+    }
+ }
+
+<script runat="template">
+
+public List<string> myModel = new List<string>();
+
+public void ParseJson()
+{
+    
+    var myProperties = JsonModel.Replace(" ", "").Split(',');
+    
+    
+    
+    foreach (var keyVal in myProperties)
+    {
+        var tmp = keyVal.Split(':');
+        
+        myModel.Add(string.Format("{0} {1}", tmp[1], tmp[0]));
+    }
+}
+
+public void WriteProperties()
+{
+    ParseJson();
+    
+    var propString = new StringBuilder();
+    
+    foreach(var tmp in myModel)
+    {
+        propString.Append("         public ");
+        propString.Append(tmp);
+        propString.Append(" { get; set; }");
+        propString.AppendLine();
+        
+        //propString = string.Format("{0}public {1} \{ get; set;\}{2}", propString, tmp, System.Environment.NewLine);
+    }
+    Response.Write(propString.ToString());
+}
+</script>

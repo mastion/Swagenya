@@ -1,0 +1,6 @@
+﻿<%@ Template Language="JavaScript" TargetLanguage="JavaScript"%>
+<%@ Property Name="AngularAppName" Type="System.String" Default="SampleApp" Description="Name of the angular app"%>
+
+"use strict";
+
+angular.module("<%=AngularAppName%>", []);

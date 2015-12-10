@@ -1,0 +1,20 @@
+﻿<%@ Template Language="JavaScript" TargetLanguage="JavaScript"%>
+<%@ Property Name="AngularAppName" Type="System.String" Default="SampleApp" Description="This is the name of the angular app this service should be associated with" %>
+<%@ Property Name="AngularServiceName" Type="System.String" Default="SampleService" Description="This is the name of the angular service that this file will represent"%>
+<%@ Property Name="ModelName" Type="System.String" Default="SampleModel" Description="This is the model that this service is built on" %>
+<%@ Property Name="PostRoute" Type="System.String" Default="/sampleApp/api/SampleResource/" Description="This is the web resource that the service will reach out to in order to post a model" %>
+
+"use strict";
+
+function <%=AngularServiceName%>($http) {
+    this.add<%=ModelName%> = function (<%=ModelName%>) {
+        return $http({
+            url: "<%=PostRoute%>",
+            method: "POST",
+            data: <%=ModelName%>
+        });
+    };
+}
+
+angular.module("<%=AngularAppName%>")
+    .service("<%=AngularServiceName%>", ["$http", <%=AngularServiceName%>]);
