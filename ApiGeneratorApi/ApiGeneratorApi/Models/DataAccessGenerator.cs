@@ -18,8 +18,8 @@ namespace ApiGeneratorApi.Models
 
         public void Generate()
         {
-            FileWriter.WriteFile(FilePath, GenerateReader());
-            FileWriter.WriteFile(FilePath, GenerateWriter());
+            new FileWriter().WriteFile(FilePath, GenerateReader());
+            new FileWriter().WriteFile(FilePath, GenerateWriter());
         }
 
         private string GenerateWriter()

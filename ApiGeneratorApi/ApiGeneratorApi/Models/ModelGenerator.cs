@@ -26,7 +26,7 @@ namespace ApiGeneratorApi.Models
         public void Generate()
         {
             CompileData();
-            FileWriter.WriteFile(FilePath,_data);
+            new FileWriter().WriteFile(FilePath,_data);
         }
 
         private void CompileData()
