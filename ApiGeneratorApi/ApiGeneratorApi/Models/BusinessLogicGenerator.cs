@@ -10,7 +10,7 @@ namespace ApiGeneratorApi.Models
         private string _data;
 
         public readonly string FilePath;
-        private readonly string ClassSuffix = "BusinessLogic";
+        private const string ClassSuffix = "BusinessLogic";
 
         public BusinessLogicGenerator(EndpointSpec apiSpecification)
         {
