@@ -1,0 +1,95 @@
+﻿<%-- 
+Name: Controller
+Author: Jon Madden
+Description: 
+--%>
+<%@ Template Language="C#" TargetLanguage="C#" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Property Name="ModelName" Default="CoffeeModel" Type="System.String" %>
+
+using System.Collections.Generic;
+using System.Net;
+using System.Web.Http;
+using CoffeeApi.DataAccess;
+using CoffeeApi.Models.MenuModels;
+
+namespace <%= NamespaceName() %>
+{
+    public interface <%= InterfaceName() %>
+    {
+        [HttpPost]
+        <%= ModelName %> Create(<%= ModelName %> data);
+    }
+
+    public class <%= ClassName() %> : ApiController, <%= InterfaceName() %>
+    {
+        private readonly <%= RepositoryInterfaceName() %> _repository;
+
+        public <%= ClassName() %>() : this(new <%= RepositoryName() %>()) { }
+
+        private <%= ClassName() %>(<%= RepositoryInterfaceName() %> respository)
+        {
+            _repository = respository;
+        }
+        
+        [HttpPost]
+        public <%= ModelName %> Create(<%= ModelName %> data)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+            try
+            {
+                return _repository.Create(data);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+    }
+}
+
+<script runat="template">
+private string ClassName()
+{
+    StringBuilder builder = new StringBuilder();
+    
+    builder.AppendFormat("{0}{1}", this.ModelName, "Controller");
+    
+    return builder.ToString();
+}
+
+private string RepositoryName()
+{
+    StringBuilder builder = new StringBuilder();
+    
+    builder.AppendFormat("{0}{1}", this.ModelName, "Repository");
+    
+    return builder.ToString();
+}
+
+private string InterfaceName()
+{
+    StringBuilder builder = new StringBuilder();
+    
+    builder.AppendFormat("{0}{1}{2}", "I", this.ModelName, "Controller");
+    
+    return builder.ToString();
+}
+
+private string NamespaceName()
+{
+    return "CoffeeSpace";
+}
+
+private string RepositoryInterfaceName()
+{
+    StringBuilder builder = new StringBuilder();
+    
+    builder.AppendFormat("{0}{1}", "I", this.ModelName);
+    
+    return builder.ToString();
+}
+</script>
