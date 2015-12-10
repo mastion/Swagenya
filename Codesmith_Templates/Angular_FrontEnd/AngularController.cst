@@ -1,0 +1,42 @@
+﻿<%@ Template Language="JavaScript" TargetLanguage="JavaScript" Description="Creates an angular controller for the given resource"%>
+<%@ Property Name="AngularAppName" Type="System.String" Default="SampleApp" Description="This is the name of the angular app this controller should be associated with" %>
+<%@ Property Name="AngularServiceName" Type="System.String" Default="SampleService" Description="This is the service that will be injected into the controller" %>
+<%@ Property Name="ModelName" Type="System.String" Default="SampleModel" Description="This is the model that this controller is built on" %>
+<%@ Property Name="AngularControllerName" Type="System.String" Default="SampleController" Description="This is the name of the angular controller that this template will create" %>
+
+"use strict";
+function <%=AngularControllerName%>($scope, <%=AngularServiceName%>) {
+    $scope.add<%=ModelName%> = function () {
+        <%=AngularServiceName%>
+            .add<%=ModelName%>($scope.<%=ModelName%>ToAdd)
+            .then(function (response) {
+                $scope.active<%=ModelName%>s.push(new <%=ModelName%>(response.data));
+
+                $scope.<%=ModelName%>ToAdd = {};
+            }, function (error) {
+                $scope.ErrorMessage = 'Error adding the new <%=ModelName%>';
+            });
+    };
+    
+    $scope.initializeAdd<%=ModelName%> = function(){
+        $scope.<%=ModelName%>ToAdd = new <%=ModelName%>();
+        
+        var htmlToInsert = "";
+        
+        for (var key in <%=ModelName%>ToAdd){
+            if (<%=ModelName%>ToAdd.hasOwnProperty(key)){
+                htmlToInsert = htmlToInsert + '<div id="<%=ModelName%>ToAdd'+key+'">'+key+' : '+eval('<%=ModelName%>.'+key)+'</div> \n';
+            }
+        }
+        
+        htmlToInsert = htmlToInsert + '<button ng-click="add<%=ModelName%>()">Submit</button> \n';
+        
+        document.getElementById('add<%=ModelName%>').innerHTML = htmlToInsert;
+        
+    }
+    
+    //We probably also want $scope.initializeRemove<%=ModelName%>
+};
+
+angular.module("<%=AngularAppName%>")
+    .controller("<%=AngularControllerName%>", ["$scope", "<%=AngularServiceName%>", <%=AngularControllerName%>]);
