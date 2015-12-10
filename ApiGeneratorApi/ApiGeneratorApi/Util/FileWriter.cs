@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Util
 {
     public interface IFileWriter
     {
