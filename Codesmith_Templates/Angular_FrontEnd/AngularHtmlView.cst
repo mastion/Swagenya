@@ -3,6 +3,11 @@
 <%@ Property Name="AngularControllerName" Type="System.String"  Default="SampleControllerName" Description="This is the name of the angular controller that will drive this markup" %>
 <%@ Property Name="ModelName" Type="System.String" Default="SampleModel" Description="This is the name of the model that this page is meant to represent" %>
 
+<script src="PATH_TO_YOUR_ANGULAR_CDN_HERE"></script>
+<script src="./js/<%=AngularAppName%>App.js"></script>
+<script src="./js/<%=ModelName%>.js"></script>
+<script src="./js/<%=AngularAppName%>Service.js"></script>
+<script src="./js/<%=AngularAppName%>Controller.js"></script>
 
 <div class="sftpsync-container" ng-app="<%=AngularAppName%>" ng-controller="<%=AngularControllerName%>">
     <h3>

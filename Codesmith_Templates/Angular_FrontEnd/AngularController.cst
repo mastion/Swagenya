@@ -23,9 +23,10 @@ function <%=AngularControllerName%>($scope, <%=AngularServiceName%>) {
         
         var htmlToInsert = "";
         
-        for (var key in <%=ModelName%>ToAdd){
-            if (<%=ModelName%>ToAdd.hasOwnProperty(key)){
-                htmlToInsert = htmlToInsert + '<div id="<%=ModelName%>ToAdd'+key+'">'+key+' : '+eval('<%=ModelName%>.'+key)+'</div> \n';
+        for (var key in $scope.<%=ModelName%>ToAdd){
+            if ($scope.<%=ModelName%>ToAdd.hasOwnProperty(key)){
+                htmlToInsert = htmlToInsert + '<label for="">'+key+':</label> \n'
+                htmlToInsert = htmlToInsert + '<input ng-model="<%=ModelName%>ToAdd.'+key+'" name="<%=ModelName%>ToAdd'+key+'" /> \n';
             }
         }
         
@@ -34,8 +35,6 @@ function <%=AngularControllerName%>($scope, <%=AngularServiceName%>) {
         document.getElementById('add<%=ModelName%>').innerHTML = htmlToInsert;
         
     }
-    
-    //We probably also want $scope.initializeRemove<%=ModelName%>
 };
 
 angular.module("<%=AngularAppName%>")
