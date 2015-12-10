@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Web.Configuration;
+using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
 {
@@ -13,7 +14,7 @@ namespace ApiGeneratorApi.Models
         {
             _apiSpecification = apiSpecification;
             _modelType = modelType;
-            FilePath = string.Format("{0}/DataAccess/{1}", WebConfigurationManager.AppSettings["OutputFolder"], GetType());
+            FilePath = string.Format("{0}/DataAccess/{1}", WebConfigurationManager.AppSettings["OutputFolder"], _modelType);
         }
 
         public void Generate()
