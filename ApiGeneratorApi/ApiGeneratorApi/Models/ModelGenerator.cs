@@ -15,7 +15,7 @@ namespace ApiGeneratorApi.Models
         {
             _apiSpecification = apiSpecification;
 
-            FilePath = string.Format("{0}/Model/{1}", WebConfigurationManager.AppSettings["PFUserName"], GetType());
+            FilePath = string.Format("{0}/Model/{1}", WebConfigurationManager.AppSettings["OutputFolder"], GetType());
         }
 
         public new string GetType()
@@ -26,14 +26,7 @@ namespace ApiGeneratorApi.Models
         public void Generate()
         {
             CompileData();
-            WriteFile();
-        }
-
-        private void WriteFile()
-        {
-            using(var fs = new FileStream(FilePath, FileMode.Create))
-            using(var sw = new StreamWriter(fs))
-            sw.Write(_data);
+            FileWriter.WriteFile(FilePath,_data);
         }
 
         private void CompileData()
@@ -54,11 +47,16 @@ namespace ApiGeneratorApi.Models
         {
             var sb = new StringBuilder();
 
-            foreach (var myProperty in _apiSpecification.Request)
+
+            foreach (var myProperty in _apiSpecification.Responses)
             {
-                sb.AppendFormat(" public {0} {1} ", myProperty.Type, myProperty.Name);
-                sb.AppendLine("{ get; set; }");
+                foreach (var myBody in myProperty.Body)
+                {
+                    sb.AppendFormat(" public {0} {1} ", myBody.Type, myBody.Name);
+                    sb.AppendLine("{ get; set; }");
+                }                
             }
+
 
             return sb.ToString();
         }

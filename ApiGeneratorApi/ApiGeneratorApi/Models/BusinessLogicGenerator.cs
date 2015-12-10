@@ -11,6 +11,7 @@ namespace ApiGeneratorApi.Models
 
         public readonly string FilePath;
         private readonly string _modelType;
+        private readonly FileWriter _fileWriter;
         private const string ClassSuffix = "BusinessLogic";
 
         public BusinessLogicGenerator(EndpointSpec apiSpecification, string modelType)
@@ -18,19 +19,13 @@ namespace ApiGeneratorApi.Models
             _apiSpecification = apiSpecification;
             _modelType = modelType;
             FilePath = string.Format("{0}/BusinessLogic/{1}", WebConfigurationManager.AppSettings["OutputFolder"], _modelType);
+            _fileWriter = new FileWriter();
         }
 
         public void Generate()
         {
             CompileData();
-            WriteFile();
-        }
-
-        private void WriteFile()
-        {
-            using (var fs = new FileStream(FilePath, FileMode.Create))
-            using (var sw = new StreamWriter(fs))
-                sw.Write(_data);
+            FileWriter.WriteFile(FilePath, _data);
         }
 
         private void CompileData()
