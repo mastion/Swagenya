@@ -87,6 +87,7 @@
     <Compile Include="Models\DataAccessGenerator.cs" />
     <Compile Include="Models\EndPointGenerator.cs" />
     <Compile Include="Models\ModelGenerator.cs" />
+    <Compile Include="Models\TestGenerator.cs" />
     <Compile Include="Models\WebApiGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
