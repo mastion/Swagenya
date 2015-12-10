@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Text;
+using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
 {
@@ -47,7 +48,7 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}"))
+            builder.AppendLine(String.Format("function {0}"));
             
             
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
