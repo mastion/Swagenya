@@ -18,7 +18,8 @@ namespace ApiGeneratorApi.Models
             _fileWriter = new FileWriter();
             _endpointSpecification = endpointSpecification;
             _modelType = modelType;
-            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js");
+            _outputDirectory = new FolderWriter().GetFolderName("js");
+                //String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js"));
         }
 
         public void Generate()
