@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Collections.Generic;
+using System.Web.Http;
 using ApiGeneratorApi.Models;
 
 namespace ApiGeneratorApi.Controllers
@@ -14,11 +15,15 @@ namespace ApiGeneratorApi.Controllers
         [HttpPost]
         public IHttpActionResult Generate(ApiSpecification apiSpecification)
         {
+            var endpoints = new List<EndpointSpec>();
+
             foreach (var endpoint in apiSpecification.Endpoints)
             {
                 new EndPointGenerator(endpoint).Generate();
+                endpoints.Add(endpoint);
             }
-
+            
+            new WebApiGenerator(endpoints).Generate();
 
             return Ok(apiSpecification);
         }
