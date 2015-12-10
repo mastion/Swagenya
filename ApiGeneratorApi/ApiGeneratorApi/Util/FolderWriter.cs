@@ -12,7 +12,7 @@ namespace ApiGeneratorApi.Util
     {
         public string GetFolderName(string level)
         {
-            var s = string.Format("{0}/{1}-{2}{3}{4}/", WebConfigurationManager.AppSettings["OutputFolder"], level, DateTime.Now.Hour, DateTime.Now.Minute,DateTime.Now.Second);
+            var s = string.Format("{0}/{2}{3}{4}/{1}/", WebConfigurationManager.AppSettings["OutputFolder"], level, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             Directory.CreateDirectory(s);
             return s;
         }
