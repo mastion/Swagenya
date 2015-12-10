@@ -36,15 +36,20 @@ namespace ApiGeneratorApi.Models
         private void GenerateAngularModel()
         {
             var builder = new StringBuilder();
+            builder.AppendLine("TODO");
             //TODO: Write the content here
 
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType), builder);
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType), builder.ToString());
         }
 
         private void GenerateAngularController()
         {
             var builder = new StringBuilder();
-            //TODO: Write the content here
+
+            builder.AppendLine(String.Format("'use strict'"));
+            builder.AppendLine(String.Format("function {0}"))
+            
+            
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
         }
 
