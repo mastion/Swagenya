@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Text;
 using ApiGeneratorApi.Util;
 
@@ -48,7 +47,7 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine(String.Format("      {0}Service", _modelType));
             builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", _modelType));
             builder.AppendLine(String.Format("          .then(function (response) {{"));
-            builder.AppendLine(String.Format("              $scope.active{0}s.push(new {0}(response.data);"));
+            builder.AppendLine(String.Format("              $scope.active{0}s.push(new {0}(response.data);", _modelType));
             builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", _modelType));
             builder.AppendLine(String.Format("          }}, function (error) {{"));
             builder.AppendLine(String.Format("              $scope.ErrorMessage = 'Error adding the new {0}';", _modelType));
