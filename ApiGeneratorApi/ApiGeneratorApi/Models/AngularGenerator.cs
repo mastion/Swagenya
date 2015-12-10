@@ -18,15 +18,36 @@ namespace ApiGeneratorApi.Models
         public void Generate()
         {
             //Create the Angular App
-            File.Create(String.Format(@"{0}\{1}App.js", _outputDirectory, _modelType));
+            using (var fileStream = File.Create(String.Format(@"{0}\{1}App.js", _outputDirectory, _modelType)))
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                streamWriter.WriteLine("'use strict'");
+                streamWriter.WriteLine("angular.module('{0}', []);", _modelType);
+            }
             //Create the Angular Service
-            File.Create(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType));
+            using (var fileStream = File.Create(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType)))
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                //TODO: write the angular service content
+            }
             //Create the Angular Controller
-            File.Create(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType));
+            using (var fileStream = File.Create(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType)))
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                //TODO: write the angular controller content
+            }
             //Create Angular Directives
-            File.Create(String.Format(@"{0}\{1}Directives.js", _outputDirectory, _modelType));
+            using (var fileStream = File.Create(String.Format(@"{0}\{1}Directives.js", _outputDirectory, _modelType)))
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                //TODO: write the angular directives, if necessary
+            }
             //Create the Angular Model
-            File.Create(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType));
+            using (var fileStream = File.Create(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType)))
+            using (var streamWriter = new StreamWriter(fileStream))
+            {
+                //TODO: write the angular model
+            }
 
         }
 
