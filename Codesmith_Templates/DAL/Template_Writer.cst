@@ -1,0 +1,50 @@
+﻿<%-- 
+Name:
+Author: 
+Description: 
+--%>
+<%@ Template Language="C#" TargetLanguage="Text" %>
+<%@ Import Namespace="System.Text" %>
+<%@ Property Name="Namespace" Type="System.String" Optional="False" Category="Context" Description="The namespace of the generated class" %>
+<%@ Property Name="ModelName" Type="System.String" Optional="False" %>
+<%@ Property Name="ModelPropertyCsv" Type="System.String" Optional="False" %>
+
+using System.Data;
+using System.Linq;
+using Dapper;
+using Giftango.Component.Utility;
+
+namespace <%= Namespace %>
+{
+    public class <%= ModelName%>Writer(<%= ModelName%> modelToWrite)
+    {
+        public int Write<%= ModelName%>()
+        {
+            using (var connection = ConnectionHelper.GetConnection())
+            {
+                return connection.Query<int>("[dbo].[Insert<%= ModelName%>]", new {<%GenerateAnonymousModeByJSON();%>},
+                    commandType: CommandType.StoredProcedure).First();
+            }
+        }
+    }
+
+}
+<script runat="template">
+public void GenerateAnonymousModeByJSON()
+{
+    StringBuilder sb = new StringBuilder();
+    foreach(var property in ModelPropertyCsv.Split(','))
+    {
+        sb.Append(string.Format("{0}.{1},",ModelName, property));
+    }
+    string s = sb.ToString();
+    s = s.Trim(',');
+    Response.Write(s);
+}
+</script>
+
+
+
+
+
+
