@@ -190,3 +190,5 @@ ModelManifest.xml
 
 #ignore the packages folder
 packages/
+#ignore the GeneratedCode folder
+GeneratedCode/

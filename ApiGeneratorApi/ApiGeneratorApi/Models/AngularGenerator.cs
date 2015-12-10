@@ -1,15 +1,85 @@
+using System;
+using System.Configuration;
+using System.IO;
+using System.Text;
+
 namespace ApiGeneratorApi.Models
 {
-    public  class AngularGenerator
+    public class AngularGenerator
     {
-        public AngularGenerator(EndpointSpec apiSpecification, string modelType)
+        private string _outputDirectory;
+        private string _modelType;
+        private EndpointSpec _endpointSpecification;
+        private IFileWriter _fileWriter;
+
+        public AngularGenerator(EndpointSpec endpointSpecification, string modelType)
         {
+            _fileWriter = new FileWriter();
+            _endpointSpecification = endpointSpecification;
+            _modelType = modelType;
+            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js");
         }
 
         public void Generate()
         {
+            //Create the Angular App
+            GenerateAngularApp();
+            //Create the Angular Service
+            GenerateAngularService();
+            //Create the Angular Controller
+            GenerateAngularController();
+            //Create the Angular Model
+            GenerateAngularModel();
 
         }
 
+        private void GenerateAngularModel()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine("TODO");
+            //TODO: Write the content here
+
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType), builder.ToString());
+        }
+
+        private void GenerateAngularController()
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine(String.Format("'use strict'"));
+            builder.AppendLine(String.Format("function {0}"))
+            
+            
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+        }
+
+        private void GenerateAngularService()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine(String.Format("'use strict'"));
+            builder.AppendLine(String.Format("function {0}Service($http) {{", _modelType));
+            builder.AppendLine(String.Format("  this.add{0} = function ({0}) {{", _modelType));
+            builder.AppendLine(String.Format("      return $http({{"));
+            builder.AppendLine(String.Format("          url: '{0}',", _endpointSpecification.Uri));
+            builder.AppendLine(String.Format("          method: '{0}',", _endpointSpecification.HttpVerb));
+            builder.AppendLine(String.Format("          data: '{0}'", _modelType));
+            builder.AppendLine(String.Format("      }});"));
+            builder.AppendLine(String.Format("  }};"));
+            builder.AppendLine(String.Format("}}"));
+            builder.AppendLine(String.Format("angular.module('{0}').service('{0}Service', ['$http', {0}Service]);",
+                _modelType));
+
+
+
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType), builder.ToString());
+        }
+
+        private void GenerateAngularApp()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("'use strict'");
+            sb.AppendLine(String.Format("angular.module('{0}', []);", _modelType));
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}App.js", _outputDirectory, _modelType), sb.ToString());
+        }
     }
 }

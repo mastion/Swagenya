@@ -12,13 +12,20 @@ namespace ApiGeneratorApi.Models
 
         public DataAccessGenerator(EndpointSpec apiSpecification, string modelType)
         {
+<<<<<<< HEAD
+            //throw new System.NotImplementedException();
+=======
             _apiSpecification = apiSpecification;
             _modelType = modelType;
             FilePath = string.Format("{0}/DataAccess/{1}", WebConfigurationManager.AppSettings["OutputFolder"], _modelType);
+>>>>>>> master
         }
 
         public void Generate()
         {
+<<<<<<< HEAD
+            //throw new System.NotImplementedException();
+=======
             new FileWriter().WriteFile(FilePath, GenerateReader());
             new FileWriter().WriteFile(FilePath, GenerateWriter());
         }
@@ -52,6 +59,7 @@ namespace ApiGeneratorApi.Models
             sb.Append("}");
 
             return sb.ToString();
+>>>>>>> master
         }
 
         private string GenerateReader()

@@ -88,10 +88,12 @@
     <Compile Include="Models\BusinessLogicGenerator.cs" />
     <Compile Include="Models\DataAccessGenerator.cs" />
     <Compile Include="Models\EndPointGenerator.cs" />
+    <Compile Include="Util\FileWriter.cs" />
     <Compile Include="Models\ModelGenerator.cs" />
     <Compile Include="Models\TestGenerator.cs" />
     <Compile Include="Models\WebApiGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\FolderWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
