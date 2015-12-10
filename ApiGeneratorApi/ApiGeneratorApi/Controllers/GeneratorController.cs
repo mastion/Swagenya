@@ -19,7 +19,6 @@ namespace ApiGeneratorApi.Controllers
                 new EndPointGenerator(endpoint).Generate();
             }
 
-
             return Ok(apiSpecification);
         }
 

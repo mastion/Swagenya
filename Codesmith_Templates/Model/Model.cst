@@ -3,9 +3,9 @@ Name:
 Author: 
 Description: 
 --%>
-<%@ Template Language="C#" TargetLanguage="Text" %>
+<%@ Template Language="C#" TargetLanguage="C#" %>
 <%@ Import Namespace="System.Text"  %>
-<%@ Import Namespace="System.Collections.Generic"  %>
+<%@ Import Namespace="System.Collections.Generic" %>
 
 <%@ Property Name="ModelName" Default="myModel" Type="System.String" %>
 <%@ Property Name="JsonModel" Default="" Type="System.String" %>
@@ -26,11 +26,7 @@ public List<string> myModel = new List<string>();
 public void ParseJson()
 {
     
-    var myProperties = JsonModel.Replace(" ", "").Split(',');
-    
-    
-    
-    foreach (var keyVal in myProperties)
+    foreach (var keyVal in JsonModel.Replace(" ", "").Split(','))
     {
         var tmp = keyVal.Split(':');
         
@@ -50,8 +46,6 @@ public void WriteProperties()
         propString.Append(tmp);
         propString.Append(" { get; set; }");
         propString.AppendLine();
-        
-        //propString = string.Format("{0}public {1} \{ get; set;\}{2}", propString, tmp, System.Environment.NewLine);
     }
     Response.Write(propString.ToString());
 }

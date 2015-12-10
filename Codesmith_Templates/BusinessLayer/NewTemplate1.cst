@@ -1,0 +1,95 @@
+﻿<%-- 
+Name:
+Author: 
+Description: 
+--%>
+<%@ Template Language="C#" TargetLanguage="C#" %>
+<%-- Begin namespaces used by template --%>
+<%@ Import Namespace="System.Text"  %>
+<%@ Import Namespace="System.Collections.Generic" %>
+
+<%-- End namespaces used by template --%>
+
+<%@ Property Name="ModelName" Default="myModel" Type="System.String" %>
+<%@ Property Name="Properties" Default="Id:int,Name:string" Type="System.String" %>
+<%@ Property Name="ActionNameSpace" Default="GiftangoDomainActions" Type="System.String" %>
+<%@ Property Name="UsedNamespaces" Default="System.Collections.Generic,System.Text.RegularExpressions" Type="System.String" %>
+<%@ Property Name="Acessor" Default="public" Type="System.String" %>
+<%@ Property Name="ConcreteReader" Default="public" Type="System.String" %>
+
+<%ParseJson();%><%--Read in Model--%>
+
+<% ImportUsedNamespaces(); %>
+
+namespace <%=ActionNameSpace %>
+{
+    <%=Acessor %> interface I<%= ModelName %>Actions
+    {
+        <% WriteProperties(""); %>
+        readonly I<%=ModelName %>Reader _reader;
+        readonly I<%=ModelName %>Writer _writer;
+    }
+    
+    <%=Acessor %> class <%=ModelName %>Actions : I<%= ModelName %>Actions
+    {
+        <% WriteProperties(Acessor); %>
+        private readonly I<%=ModelName %>Reader _reader;
+        private readonly I<%=ModelName %>Writer _writer;
+        
+        <%=Acessor %> <%=ModelName %>Actions() : this(new <%=ModelName %>Reader(), new <%=ModelName %>Writer)
+        {        
+        }
+        
+        <%=Acessor %> <%=ModelName %>Actions(I<%=ModelName %>Reader reader, <%=ModelName %>Writer writer)
+        {
+            _reader = reader;
+            _writer = writer;
+        }
+        
+        <%=Acessor %> <%=ModelName %> GetAll()
+        {
+            
+        }
+        
+        <%=Acessor %> List<<%=ModelName %>> Get(int Id)
+        {
+            
+        }
+    }
+}
+
+<script runat="template">
+
+public List<string> myModel = new List<string>();
+
+public void ImportUsedNamespaces()
+{
+    foreach(var tmpNameSpace in UsedNamespaces.Split(','))
+    { Response.WriteLine(string.Format("using {0};", tmpNameSpace)); }
+}
+
+public void ParseJson()
+{
+    foreach (var keyVal in Properties.Replace(" ", "").Split(','))
+    {
+        var tmp = keyVal.Split(':');
+        
+        myModel.Add(string.Format("{0} {1}", tmp[1], tmp[0]));
+    }
+}
+
+public void WriteProperties(string acessor)
+{
+    
+    var propString = new StringBuilder();
+    
+    foreach(var tmp in myModel)
+    {
+        propString.AppendFormat("       {0} {1}", acessor, tmp);
+        //propString.Append();
+        propString.AppendLine(" { get; set; }");
+    }
+    Response.Write(propString.ToString());
+}
+
+</script>
