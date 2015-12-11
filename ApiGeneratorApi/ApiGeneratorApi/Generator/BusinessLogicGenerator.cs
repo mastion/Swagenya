@@ -71,8 +71,7 @@ namespace ApiGeneratorApi.Models
         private string CompileProperties(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         {0}readonly I{1}Reader _reader;", isConcrete ? "private " : "", _modelType);
-            sb.AppendLine();
+            sb.AppendFormat("         {0}readonly I{1}Reader _reader;", isConcrete ? "private " : "", _modelType).AppendLine();
             sb.AppendFormat("         {0}readonly I{1}Writer _writer;", isConcrete ? "private " : "", _modelType);
             return sb.ToString();
         }
@@ -80,11 +79,9 @@ namespace ApiGeneratorApi.Models
         private string CompileConstrutors()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         public {0}{1}() : this(new {0}Reader(), new {0}Writer())", _modelType, ClassSuffix);
-            sb.AppendLine();
+            sb.AppendFormat("         public {0}{1}() : this(new {0}Reader(), new {0}Writer())", _modelType, ClassSuffix).AppendLine();
             sb.AppendLine("         { }");
-            sb.AppendFormat("         public {0}{1}() (I{0}Reader reader, I{0}Writer writer)", _modelType, ClassSuffix);
-            sb.AppendLine();
+            sb.AppendFormat("         public {0}{1}() (I{0}Reader reader, I{0}Writer writer)", _modelType, ClassSuffix).AppendLine();
             sb.AppendLine("         {");
             sb.AppendLine("           _reader = reader;");
             sb.AppendLine("           _writer = writer;");
@@ -95,8 +92,7 @@ namespace ApiGeneratorApi.Models
         private string CompileWriteFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         {0}int Write({1} data)", isConcrete? "public " : "", _modelType);
-            sb.AppendLine();
+            sb.AppendFormat("         {0}int Write({1} data)", isConcrete ? "public " : "", _modelType).AppendLine();
             sb.AppendLine("         {");
             sb.AppendLine("             return _writer.Write(data);");
             sb.AppendLine("         }");
@@ -106,8 +102,7 @@ namespace ApiGeneratorApi.Models
         private string CompileReadFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         {0}{1} Get(int Id)", isConcrete ? "public " : "", _modelType);
-            sb.AppendLine();
+            sb.AppendFormat("         {0}{1} Get(int Id)", isConcrete ? "public " : "", _modelType).AppendLine();
             sb.AppendLine("         {");
             sb.AppendLine("             return _reder.Get(Id);");
             sb.AppendLine("         }");
@@ -117,8 +112,7 @@ namespace ApiGeneratorApi.Models
         private string CompileReadAllFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         {0}List<{1}> GetAll()", isConcrete ? "public " : "", _modelType);
-            sb.AppendLine();
+            sb.AppendFormat("         {0}List<{1}> GetAll()", isConcrete ? "public " : "", _modelType).AppendLine();
             sb.AppendLine("         {");
             sb.AppendLine("             return _reder.GetAll();");
             sb.AppendLine("         }");
