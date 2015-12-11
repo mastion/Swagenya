@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Web.UI.WebControls;
 using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
@@ -51,7 +49,10 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine(GenerateControllerFooter());
 
-            _fileWriter.WriteFile(String.Format(@"{0}/{1}Controller.cs", _outputDirectory, modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)), builder.ToString());
+            _fileWriter.WriteFile(
+                String.Format(@"{0}/{1}Controller.cs", _outputDirectory,
+                    modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)),
+                builder.ToString());
         }
 
         private static string GenerateControllerHeader(string modelType)
@@ -63,7 +64,8 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine();
             builder.AppendLine("namespace Giftango.Domain.Controllers");
             builder.AppendLine("{");
-            builder.AppendFormat("    public class {0}Controller : ApiController", modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+            builder.AppendFormat("    public class {0}Controller : ApiController",
+                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("    {");
 
@@ -94,7 +96,8 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine("        [HttpGet]");
             builder.AppendLine("        public IHttpActionResult Index(int? id)");
             builder.AppendLine("        {");
-            builder.AppendFormat("            var bl = new {0}BusinessLogic();", modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+            builder.AppendFormat("            var bl = new {0}BusinessLogic();",
+                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("            return Ok(id == null? bl.GetAll(): bl.Get(id);");
             builder.AppendLine("        }");
@@ -107,7 +110,8 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine("        [HttpPost]");
-            builder.AppendFormat("        public IHttpActionResult Generate({0} data)", modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+            builder.AppendFormat("        public IHttpActionResult Generate({0} data)",
+                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("        {");
             builder.AppendFormat("          var tmpId = new {0}BusinessLogic().Write(data);", modelType);
