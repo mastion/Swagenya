@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Text;
 using ApiGeneratorApi.Util;
 
@@ -6,26 +7,29 @@ namespace ApiGeneratorApi.Models
 {
     public class AngularGenerator
     {
-        private readonly string _outputDirectory;
-        private readonly string _modelType;
         private readonly EndpointSpec _endpointSpecification;
         private readonly IFileWriter _fileWriter;
+        private readonly string _modelType;
+        private readonly string _outputDirectory;
 
         public AngularGenerator(EndpointSpec endpointSpecification, string modelType)
         {
             _fileWriter = new FileWriter();
             _endpointSpecification = endpointSpecification;
             _modelType = modelType;
-            _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("js"));
+            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "js");
         }
 
         public void Generate()
         {
+            //Create the Angular App
             GenerateAngularApp();
+            //Create the Angular Service
             GenerateAngularService();
+            //Create the Angular Controller
             GenerateAngularController();
+            //Create the Angular Model
             GenerateAngularModel();
-
         }
 
         private void GenerateAngularModel()
@@ -42,23 +46,17 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}Controller($scope, {0}Service) {{", _modelType));
-            builder.AppendLine(String.Format("  $scope.add{0} = function() {{", _modelType));
-            builder.AppendLine(String.Format("      {0}Service", _modelType));
-            builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", _modelType));
-            builder.AppendLine(String.Format("          .then(function (response) {{"));
-            builder.AppendLine(String.Format("              $scope.active{0}s.push(new {0}(response.data);", _modelType));
-            builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", _modelType));
-            builder.AppendLine(String.Format("          }}, function (error) {{"));
-            builder.AppendLine(String.Format("              $scope.ErrorMessage = 'Error adding the new {0}';", _modelType));
-            builder.AppendLine(String.Format("          }});"));
-            builder.AppendLine(String.Format("  }};"));
-            builder.AppendLine(String.Format("}};"));
-            builder.AppendLine(String.Format("angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);", _modelType));
+            builder.AppendLine(String.Format("function {0}"));
+<<<<<<< HEAD
 
+
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType),
+                builder.ToString());
+=======
             
             
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+>>>>>>> 494d9360135b0b7135ee3175035f7080bcb8e370
         }
 
         private void GenerateAngularService()
@@ -76,7 +74,6 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine(String.Format("}}"));
             builder.AppendLine(String.Format("angular.module('{0}').service('{0}Service', ['$http', {0}Service]);",
                 _modelType));
-
 
 
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType), builder.ToString());
