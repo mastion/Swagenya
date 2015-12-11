@@ -1,0 +1,81 @@
+#%RAML 0.8
+title: e-Coffee Shop API
+baseUri: http://api.e-coffeeshop.com/{version}
+version: v1
+
+/drinks:
+  get:
+    description: Retrieve all drinks on the menu
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              "drinks": [
+                {
+                  "id": 1,
+                  "name": "Latte",
+                  "size": "Medium",
+                  "price": 2.99
+                },
+                {
+                  "id": 2,
+                  "name": "Mocha",
+                  "size": "Small",
+                  "price": 1.50
+                }
+              ]
+  post:
+    description: |
+      Enters drink information
+    body:
+      application/json:
+        schema: drink
+        example: |
+          {
+            "name": "Latte",
+            "size": "Medium",
+            "price": 2.99
+          }
+
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "id":   1
+                "name": "Latte",
+                "size": "Medium",
+                "price": 2.99
+              }
+      403:
+        body:
+          application/json:
+            example: |
+              {
+                "message": "Invalid drink data"
+              }
+
+schemas:
+  - drink: |
+      {
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-03/schema",
+        "id": "http://jsonschema.net",
+        "required": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "required": true
+          },
+          "size": {
+            "type": "string",
+            "required": true
+          },
+          "price": {
+            "type": "decimal",
+            "required": true
+          }
+        }
+      }
