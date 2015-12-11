@@ -1,4 +1,6 @@
-﻿namespace ApiGeneratorApi.Models
+﻿using ApiGeneratorApi.Generator;
+
+namespace ApiGeneratorApi.Models
 {
     public class EndPointGenerator
     {
@@ -17,6 +19,7 @@
             new AngularGenerator(_endpointSpec, modelType).Generate();
             new BusinessLogicGenerator(_endpointSpec, modelType).Generate();
             new DataAccessGenerator(_endpointSpec, modelType).Generate();
+            new StoredProcGenerator(_endpointSpec, modelType).Generate();
             new TestGenerator(_endpointSpec, modelType).Generate();
         }
     }
