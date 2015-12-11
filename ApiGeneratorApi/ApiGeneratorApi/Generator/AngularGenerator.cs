@@ -201,5 +201,10 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine(String.Format("angular.module('{0}', []);", _modelType));
             _fileWriter.WriteFile(String.Format(@"{0}\{1}App.js", _outputDirectory, _modelType), sb.ToString());
         }
+
+        public void Generate2()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -17,8 +17,10 @@ namespace ApiGeneratorApi.AMLMappers
             _doc = doc;
         }
 
-        public List<ResourceSpec> GetResourceSpecs()
+        public IEnumerable<ResourceSpec> GetResourceSpecs()
         {
+            //apiSpecification.First(x => x.Uri != null).Uri;
+            //modelType = modelType.First().ToString().ToUpper() + modelType.Substring(1);
             //var modelGenerator = new ModelGenerator(_endpointSpec);
             //modelGenerator.Generate();
             //string modelType = modelGenerator.GetType();
@@ -28,7 +30,7 @@ namespace ApiGeneratorApi.AMLMappers
                 Endpoints = r.Methods.Select(m => new EndpointSpec
                 {
                     Uri = _doc.BaseUri + r.RelativeUri,
-                    HttpVerb = m.Verb,
+                    HttpVerb = m.Verb, 
                     Request = new List<PayloadFieldSpec>(),
                     Responses = new List<ResponseSpec>()
                 }).ToList()

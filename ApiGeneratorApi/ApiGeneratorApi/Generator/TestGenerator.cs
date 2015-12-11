@@ -1,12 +1,11 @@
-﻿namespace ApiGeneratorApi.Models
+﻿using System.Collections.Generic;
+
+namespace ApiGeneratorApi.Models
 {
     public class TestGenerator
     {
-        private EndpointSpec _endPointSpec;
-
-        public TestGenerator(EndpointSpec endpointSpec, string modelType)
+        public TestGenerator(IEnumerable<ResourceSpec> getResourceSpecs)
         {
-            _endPointSpec = endpointSpec;
         }
 
         public void Generate()

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web.Http;
 using ApiGeneratorApi.AMLMappers;
+using ApiGeneratorApi.Generator;
 using ApiGeneratorApi.Models;
 
 namespace ApiGeneratorApi.Controllers
@@ -31,13 +32,13 @@ namespace ApiGeneratorApi.Controllers
             var apiSpec = await new SpecLoader().Load(id);
             var mapper = new RAMLMapper(apiSpec);
 
-            new WebApiGenerator(mapper.GetResourceSpecs()).Generate();
+            new ModelGenerator(mapper.GetResourceSpecs()).Generate();
+            new WebApiGenerator((List<ResourceSpec>) mapper.GetResourceSpecs()).Generate2();
+            new ActionGenerator(mapper.GetResourceSpecs()).Generate();
+            new TestGenerator(mapper.GetResourceSpecs()).Generate();
+            new DataAccessGenerator(mapper.GetResourceSpecs()).Generate();
 
-            new AngularGenerator(_endpointSpec, modelType).Generate();
-            new BusinessLogicGenerator(_endpointSpec, modelType).Generate();
-            new DataAccessGenerator(_endpointSpec, modelType).Generate();
-            new TestGenerator(_endpointSpec, modelType).Generate();
-
+            //new AngularGenerator(mapper.GetResourceSpecs()).Generate();
             return Ok(pathToOutputDirectory);
         }
 

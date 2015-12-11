@@ -19,7 +19,6 @@ namespace ApiGeneratorApi.Generator
             new ActionGenerator(_endpointSpec, modelType).Generate();
             new DataAccessGenerator(_endpointSpec, modelType).Generate();
             new StoredProcGenerator(_endpointSpec, modelType).Generate();
-            new TestGenerator(_endpointSpec, modelType).Generate();
         }
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ApiGeneratorApi.Util;
 
@@ -9,12 +12,18 @@ namespace ApiGeneratorApi.Models
         private string _data;
 
         public readonly string FilePath;
+        private IEnumerable<ResourceSpec> _resourceSpecs;
 
         public ModelGenerator(EndpointSpec apiSpecification)
         {
             _apiSpecification = apiSpecification;
 
             FilePath = string.Format("{0}/{1}.cs", new FolderWriter().GetFolderName("Model"), GetType());
+        }
+
+        public ModelGenerator(IEnumerable<ResourceSpec> resourceSpecs)
+        {
+            _resourceSpecs = resourceSpecs;
         }
 
         public new string GetType()
@@ -24,44 +33,44 @@ namespace ApiGeneratorApi.Models
 
         public void Generate()
         {
-            CompileData();
-            new FileWriter().WriteFile(FilePath,_data);
+            foreach (var resource in _resourceSpecs)
+            {
+                var resourceName = resource.ResourceName;
+                foreach (var endPoint in resource.Endpoints)
+                {
+                    var methodName = endPoint.HttpVerb;
+                    CompileData(String.Format("{0}{1}Model", methodName, resourceName), endPoint.Request);
+                    new FileWriter().WriteFile(FilePath, _data);
+                }
+               
+            }
         }
 
-        private void CompileData()
+        private void CompileData(string modelName, List<PayloadFieldSpec> modelFields)
         {
             var sb = new StringBuilder();
             
             sb.AppendLine("namespace Giftango.Domain.Models");
             sb.AppendLine("{");
-            sb.AppendFormat("   public class {0}", GetType()).AppendLine();
+            sb.AppendFormat("   public class {0}", modelName).AppendLine();
             sb.AppendLine("     {");
-            sb.Append(WriteProperties());
+            sb.Append(WriteProperties(modelFields));
             sb.AppendLine("     }");
             sb.AppendLine(" }");
 
             _data = sb.ToString();
         }
 
-        private string WriteProperties()
+        private string WriteProperties(List<PayloadFieldSpec> modelFields)
         {
             var sb = new StringBuilder();
 
-            if (_apiSpecification.Responses == null)
-                return "";
-
-            foreach (var myProperty in _apiSpecification.Responses)
-            {   
-                foreach (var myBody in myProperty.Body)
-                {
-                    sb.AppendFormat("       public {0} {1} ", myBody.Type, myBody.Name);
-                    sb.AppendLine("{ get; set; }");
-                }                
+            foreach (var field in modelFields)
+            {
+                sb.AppendFormat("       public {0} {1} ", field.Type, field.Name);
+                sb.AppendLine("{ get; set; }");
             }
-
-
             return sb.ToString();
         }
-
     }
 }

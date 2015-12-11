@@ -14,16 +14,10 @@ namespace ApiGeneratorApi.Models
         private readonly IFileWriter _fileWriter;
         private readonly string _outputDirectory;
         private Resource _apiResource;
-        private string _resourceName;
         private List<ResourceSpec> _resources;
 
         public WebApiGenerator(EndpointSpec apiSpecification) : this(new List<EndpointSpec> {apiSpecification})
         {
-        }
-
-        public WebApiGenerator(string resourceName)
-        {
-            _resourceName = resourceName;
         }
 
         public WebApiGenerator(List<EndpointSpec> apiSpecification)
@@ -36,6 +30,8 @@ namespace ApiGeneratorApi.Models
         public WebApiGenerator(List<ResourceSpec> resourceSpecs)
         {
             _resources = resourceSpecs;
+            _fileWriter = new FileWriter();
+            _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("WebApi"));
         }
 
         public void Generate()
@@ -48,6 +44,35 @@ namespace ApiGeneratorApi.Models
             GenerateWebApiConfig();
         }
 
+        public void Generate2()
+        {
+            foreach (var resource in _resources)
+            {
+                GenerateController(resource);
+            }
+
+            GenerateWebApiConfig();
+        }
+
+        private void GenerateController(ResourceSpec resource)
+        {
+            var builder = new StringBuilder();
+            var modelType = resource.ResourceName;
+
+            builder.AppendLine(GenerateControllerHeader(modelType));
+
+            foreach (var endpointSpec in resource.Endpoints)
+            {
+                builder.AppendLine(GenerateVerb(endpointSpec.HttpVerb, modelType));
+            }
+
+            builder.AppendLine(GenerateControllerFooter());
+
+            _fileWriter.WriteFile(
+                String.Format(@"{0}/{1}Controller.cs", _outputDirectory,
+                    modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)),
+                builder.ToString());
+        }
 
         private void GenerateController(IEnumerable<EndpointSpec> apiSpecification)
         {

@@ -10,9 +10,12 @@ namespace ApiGeneratorApi.Models
 
     public class ResourceSpec
     {
+        public string ResourceUri { get; set; }
         public string ResourceName { get; set; }
         public string ResourceObjectType { get; set; }
-        public List<EndpointSpec> Endpoints { get; set; } 
+        public List<EndpointSpec> Endpoints { get; set; }
+        public List<PayloadFieldSpec> GetModel { get; set; }
+        public List<PayloadFieldSpec> PostModel { get; set; }
     }
 
     public class EndpointSpec
