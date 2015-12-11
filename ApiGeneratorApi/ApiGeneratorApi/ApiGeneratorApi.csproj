@@ -411,7 +411,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AMLMappers\RAMLMapper.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ApisController.cs" />
     <Compile Include="Controllers\GeneratorController.cs" />
     <Compile Include="Controllers\SpecLoader.cs" />
     <Compile Include="Global.asax.cs">
@@ -651,7 +653,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>29921</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/ApiGeneratorApi</IISUrl>
+          <IISUrl>http://localhost/CodeGenerator</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using ApiGeneratorApi.Util;
+using Raml.Parser.Expressions;
 
 namespace ApiGeneratorApi.Models
 {
@@ -12,9 +13,17 @@ namespace ApiGeneratorApi.Models
         private readonly List<EndpointSpec> _apiSpecification;
         private readonly IFileWriter _fileWriter;
         private readonly string _outputDirectory;
+        private Resource _apiResource;
+        private string _resourceName;
+        private List<ResourceSpec> _resources;
 
         public WebApiGenerator(EndpointSpec apiSpecification) : this(new List<EndpointSpec> {apiSpecification})
         {
+        }
+
+        public WebApiGenerator(string resourceName)
+        {
+            _resourceName = resourceName;
         }
 
         public WebApiGenerator(List<EndpointSpec> apiSpecification)
@@ -22,6 +31,11 @@ namespace ApiGeneratorApi.Models
             _fileWriter = new FileWriter();
             _apiSpecification = apiSpecification;
             _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("WebApi"));
+        }
+
+        public WebApiGenerator(List<ResourceSpec> resourceSpecs)
+        {
+            _resources = resourceSpecs;
         }
 
         public void Generate()
@@ -33,6 +47,7 @@ namespace ApiGeneratorApi.Models
 
             GenerateWebApiConfig();
         }
+
 
         private void GenerateController(IEnumerable<EndpointSpec> apiSpecification)
         {

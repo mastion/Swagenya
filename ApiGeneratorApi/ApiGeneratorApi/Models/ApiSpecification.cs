@@ -8,6 +8,13 @@ namespace ApiGeneratorApi.Models
         public List<EndpointSpec> Endpoints { get; set; }
     }
 
+    public class ResourceSpec
+    {
+        public string ResourceName { get; set; }
+        public string ResourceObjectType { get; set; }
+        public List<EndpointSpec> Endpoints { get; set; } 
+    }
+
     public class EndpointSpec
     {
         public string Uri { get; set; }
