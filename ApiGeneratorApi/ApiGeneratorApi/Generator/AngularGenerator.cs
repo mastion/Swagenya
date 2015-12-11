@@ -24,9 +24,9 @@ namespace ApiGeneratorApi.Generator
 
         public void Generate()
         {
-            GenerateAngularApp();
-            GenerateAngularService();
-            GenerateAngularController();
+            GenerateAngularApp(); //GOOD
+            GenerateAngularService(); //GOOD except we need to figure out the URL from URI
+            GenerateAngularController(); //GOOD
             GenerateAngularModel();
 
         }
@@ -35,9 +35,9 @@ namespace ApiGeneratorApi.Generator
         {
             var builder = new StringBuilder();
             builder.AppendLine(String.Format("function {0}(data){{", _modelType));
-            builder.AppendLine(String.Format("  if (!data){{"));
-            var defaultRequestFields = _endpointSpecifications.FirstOrDefault(p => p.HttpVerb == "GET") ??
-                                       _endpointSpecifications.FirstOrDefault(p => p.HttpVerb == "POST");
+            builder.AppendLine(String.Format("  if (!data){{")); //SOOO JANKY
+            var defaultRequestFields = _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0) ??
+                                       _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0);
             if (defaultRequestFields != null)
             {
                 //Definitely janky here
@@ -53,14 +53,14 @@ namespace ApiGeneratorApi.Generator
             }
             builder.AppendLine(String.Format("}}"));
 
-            builder.AppendLine(String.Format("function {0}s(data){{" +
-                                             "  var {0}s = [];" +
-                                             "  if (data){{" +
-                                             "      {0}s = data.map(function(single{0}){{" +
-                                             "          return new {0}(single{0});" +
-                                             "      }});" +
-                                             "  }}" +
-                                             "  return {0}s;" +
+            builder.AppendLine(String.Format("function {0}s(data){{\n" +
+                                             "  var {0}s = [];\n" +
+                                             "  if (data){{\n" +
+                                             "      {0}s = data.map(function(single{0}){{\n" +
+                                             "          return new {0}(single{0});\n" +
+                                             "      }});\n" +
+                                             "  }}\n" +
+                                             "  return {0}s;\n" +
                                              "}}", _modelType));
 
             builder.AppendLine(String.Format("angular.module('{0}').value('{0}', {0}).value('{0}s', {0}s);", _modelType));
@@ -77,13 +77,13 @@ namespace ApiGeneratorApi.Generator
 
             foreach (var endpointSpec in _endpointSpecifications)
             {
-                if (endpointSpec.HttpVerb == "POST")
+                if (String.Compare(endpointSpec.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     builder.AppendLine(String.Format("  $scope.add{0} = function() {{", _modelType));
                     builder.AppendLine(String.Format("      {0}Service", _modelType));
                     builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", _modelType));
                     builder.AppendLine(String.Format("          .then(function (response) {{"));
-                    builder.AppendLine(String.Format("              $scope.active{0}s.push(new {0}(response.data);",
+                    builder.AppendLine(String.Format("              $scope.current{0}s.push(new {0}(response.data);",
                         _modelType));
                     builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", _modelType));
                     builder.AppendLine(String.Format("          }}, function (error) {{"));
@@ -92,39 +92,39 @@ namespace ApiGeneratorApi.Generator
                     builder.AppendLine(String.Format("          }});"));
                     builder.AppendLine(String.Format("  }};"));
                 }
-                if (endpointSpec.HttpVerb == "GET")
+                if (String.Compare(endpointSpec.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  $scope.get{0}s = function() {{" +
-                                                     "      $scope.current{0}s = [];" +
-                                                     "      {0}Service.get{0}s()" +
-                                                     "      then(function(response){{" +
-                                                     "          $scope.current{0}s = new {0}s(response.data);" +
-                                                     "      }}, function (error){{" +
-                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;" +
-                                                     "      }});" +
+                    builder.AppendLine(String.Format("  $scope.get{0}s = function() {{\n" +
+                                                     "      $scope.current{0}s = [];\n" +
+                                                     "      {0}Service.get{0}s()\n" +
+                                                     "      then(function(response){{\n" +
+                                                     "          $scope.current{0}s = new {0}s(response.data);\n" +
+                                                     "      }}, function (error){{\n" +
+                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
+                                                     "      }});\n" +
                                                      "  }};", _modelType));
 
                 }
-                if (endpointSpec.HttpVerb == "PUT")
+                if (String.Compare(endpointSpec.HttpVerb, "PUT", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  $scope.update{0} = function({0}updated, index) {{" +
-                                                     "      {0}Service.update{0}({0}updated)" +
-                                                     "      .then(function(response){{" +
-                                                     "          $scope.current{0}s[index] = {0}updated;" +
-                                                     "      }}, function(error){{" +
-                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;" +
-                                                     "      }});" +
+                    builder.AppendLine(String.Format("  $scope.update{0} = function({0}updated, index) {{\n" +
+                                                     "      {0}Service.update{0}({0}updated)\n" +
+                                                     "      .then(function(response){{\n" +
+                                                     "          $scope.current{0}s[index] = {0}updated;\n" +
+                                                     "      }}, function(error){{\n" +
+                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
+                                                     "      }});\n" +
                                                      "  }};", _modelType));
                 }
-                if (endpointSpec.HttpVerb == "DELETE")
+                if (String.Compare(endpointSpec.HttpVerb, "DELETE", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  $scope.delete{0} = function(index){{" +
-                                                     "      {0}Service.delete{0}(current{0}s[index])" +
-                                                     "      .then(function(response){{" +
-                                                     "          $scope.current{0}s.splice(index, 1);" +
-                                                     "      }}, function(error){{" +
-                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;" +
-                                                     "      }});" +
+                    builder.AppendLine(String.Format("  $scope.delete{0} = function(index){{\n" +
+                                                     "      {0}Service.delete{0}(current{0}s[index])\n" +
+                                                     "      .then(function(response){{\n" +
+                                                     "          $scope.current{0}s.splice(index, 1);\n" +
+                                                     "      }}, function(error){{\n" +
+                                                     "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
+                                                     "      }});\n" +
                                                      "  }};", _modelType));
                 }
             }
@@ -146,23 +146,23 @@ namespace ApiGeneratorApi.Generator
 
             foreach (var endpointSpec in _endpointSpecifications)
             {
-                if (endpointSpec.HttpVerb == "POST")
+                if (String.Compare(endpointSpec.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     builder.AppendLine(String.Format("  this.add{0} = function ({0}) {{", _modelType));
                     builder.AppendLine(String.Format("      return $http({{"));
                     builder.AppendLine(String.Format("          url: '{0}',", endpointSpec.Uri));
                     builder.AppendLine(String.Format("          method: '{0}',", endpointSpec.HttpVerb));
-                    builder.AppendLine(String.Format("          data: '{0}'", _modelType));
+                    builder.AppendLine(String.Format("          data: {0}", _modelType));
                     builder.AppendLine(String.Format("      }});"));
                     builder.AppendLine(String.Format("  }};"));
                 }
-                if (endpointSpec.HttpVerb == "GET")
+                if (String.Compare(endpointSpec.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     builder.AppendLine(String.Format("  this.get{0}s = function () {{", _modelType));
                     builder.AppendLine(String.Format("      return $http.get('{0}');", endpointSpec.Uri));
                     builder.AppendLine(String.Format("  }};"));
                 }
-                if (endpointSpec.HttpVerb == "PUT")
+                if (String.Compare(endpointSpec.HttpVerb, "PUT", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     builder.AppendLine(String.Format("  this.update{0} = function({0}) {{", _modelType));
                     builder.AppendLine(String.Format("      return $http({{"));
@@ -172,7 +172,7 @@ namespace ApiGeneratorApi.Generator
                     builder.AppendLine(String.Format("      }});"));
                     builder.AppendLine(String.Format("  }}"));
                 }
-                if (endpointSpec.HttpVerb == "DELETE")
+                if (String.Compare(endpointSpec.HttpVerb, "DELETE", StringComparison.OrdinalIgnoreCase) == 0)
                 {
                     builder.AppendLine(String.Format("  this.delete{0} = function({0}) {{", _modelType));
                     builder.AppendLine(String.Format("      return $http({{"));
