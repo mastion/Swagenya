@@ -1,8 +1,8 @@
 using System.Web.Http;
-using Giftango.Domain.Models;
 using Giftango.Domain.Actions;
+using Giftango.Domain.Models;
 
-namespace Giftango.Web.Admin.Pages
+namespace DemoApi.Controllers
 {
     public class DrinkController : ApiController
     {
@@ -11,7 +11,9 @@ namespace Giftango.Web.Admin.Pages
         public IHttpActionResult Get(int? id)
         {
             var bl = new DrinkGetAction();
-            return Ok(id == null? bl.GetAll(): bl.Get(id.Value);
+            if (id == null)
+                return Ok(bl.GetAll());
+            return Ok(bl.Get(id.Value));
         }
 
 
@@ -21,7 +23,6 @@ namespace Giftango.Web.Admin.Pages
           var tmpId = new DrinkPostAction().Write(data);
             return Ok(new DrinkGetAction().Get(tmpId));
         }
-
 
 
     }

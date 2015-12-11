@@ -1,28 +1,26 @@
+using System.Collections.Generic;
 using Giftango.Domain.Models;
-using Giftango.Domain.Reader;
 using Giftango.Domain.Writer;
+using Giftango.Domain.Reader;
 
 namespace Giftango.Domain.Actions
 {
      public interface IDrinkPostAction
      {
-         readonly IDrinkReader _reader;
-         readonly IDrinkWriter _writer;
 
          int Write(Drink data);
      }
 
      public class DrinkPostAction : IDrinkPostAction
      {
-         private readonly IDrinkReader _reader;
-         private readonly IDrinkWriter _writer;
+         private readonly DrinkWriter _writer;
 
-         public DrinkPostAction() : this(new DrinkReader(), new DrinkWriter())
+
+         public DrinkPostAction() : this(new DrinkWriter())
          { }
 
-         public DrinkPostAction (IDrinkReader reader, IDrinkWriter writer)
+         public DrinkPostAction (DrinkWriter writer)
          {
-           _reader = reader;
            _writer = writer;
          }
 

@@ -1,13 +1,12 @@
+using System.Collections.Generic;
 using Giftango.Domain.Models;
-using Giftango.Domain.Reader;
 using Giftango.Domain.Writer;
+using Giftango.Domain.Reader;
 
 namespace Giftango.Domain.Actions
 {
      public interface IDrinkGetAction
      {
-         readonly IDrinkReader _reader;
-         readonly IDrinkWriter _writer;
 
          List<Drink> GetAll();
          Drink Get(int Id);
@@ -15,25 +14,24 @@ namespace Giftango.Domain.Actions
 
      public class DrinkGetAction : IDrinkGetAction
      {
-         private readonly IDrinkReader _reader;
-         private readonly IDrinkWriter _writer;
+         private readonly DrinkReader _reader;
 
-         public DrinkGetAction() : this(new DrinkReader(), new DrinkWriter())
+
+         public DrinkGetAction() : this(new DrinkReader())
          { }
 
-         public DrinkGetAction (IDrinkReader reader, IDrinkWriter writer)
+         public DrinkGetAction (DrinkReader reader)
          {
            _reader = reader;
-           _writer = writer;
          }
 
          public List<Drink> GetAll()
          {
-             return _reder.GetAll();
+             return _reader.GetAll();
          }
          public Drink Get(int Id)
          {
-             return _reder.Get(Id);
+             return _reader.GetById(Id);
          }
      }
 

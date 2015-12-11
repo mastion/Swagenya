@@ -19,12 +19,12 @@ namespace ApiGeneratorApi.Generator
         {
             //_apiSpecification = apiSpecification;
             _modelType = modelType;
-            
+
             //Formatting
             _actionType = apiSpecification.HttpVerb.ToLower();
             _actionType = _actionType[0].ToString().ToUpper() + _actionType.Substring(1);
-            
-            FilePath = string.Format("{0}/{1}Action.cs", new FolderWriter().GetFolderName("Actions"), _actionType);
+
+            FilePath = string.Format("{0}/{1}Action.cs", new FolderWriter().GetFolderName(string.Format("{0}Actions", _modelType)), _actionType);
             _fileWriter = new FileWriter();
         }
 
@@ -38,9 +38,10 @@ namespace ApiGeneratorApi.Generator
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using Giftango.Domain.Models;");
-            sb.AppendLine("using Giftango.Domain.Reader;");
             sb.AppendLine("using Giftango.Domain.Writer;");
+            sb.AppendLine("using Giftango.Domain.Reader;");
             sb.AppendLine();
             sb.AppendLine("namespace Giftango.Domain.Actions");
             sb.AppendLine("{"); //start namespace
@@ -61,11 +62,14 @@ namespace ApiGeneratorApi.Generator
             sb.AppendFormat("     public {0}{1}{2}Action", isConcrete ? "class " : "interface I", _modelType, _actionType);
             sb.AppendLine(isConcrete ? string.Format(" : I{0}{1}Action", _modelType, _actionType) : ""); //Inherit from interface if isConcrete
             sb.AppendLine("     {");
-            sb.AppendLine(CompileProperties(isConcrete));
+
+            if (isConcrete)
+                sb.AppendLine(CompileProperties(_actionType));
+
             sb.AppendLine();
 
             if (isConcrete)
-                sb.AppendLine(CompileConstrutors());
+                sb.AppendLine(CompileConstrutors(_actionType));
 
             sb.Append(CompileActionFunction(isConcrete));
 
@@ -94,24 +98,68 @@ namespace ApiGeneratorApi.Generator
             return sb.ToString();
         }
 
-        private string CompileProperties(bool isConcrete)
+        private string CompileProperties(string actionType)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         {0}readonly I{1}Reader _reader;", isConcrete ? "private " : "", _modelType).AppendLine();
-            sb.AppendFormat("         {0}readonly I{1}Writer _writer;", isConcrete ? "private " : "", _modelType);
+
+            switch (actionType.ToLower())
+            {
+                case "post":
+                    sb.AppendFormat("         private readonly {0}Writer _writer;", _modelType).AppendLine();
+                    break;
+                case "put":
+                    sb.AppendFormat("         private readonly {0}Reader _reader;", _modelType).AppendLine();
+                    sb.AppendFormat("         private readonly {0}Writer _writer;", _modelType).AppendLine();
+                    break;
+                case "get":
+                    sb.AppendFormat("         private readonly {0}Reader _reader;", _modelType).AppendLine();
+                    break;
+            }
+
+
+
+
+
             return sb.ToString();
         }
 
-        private string CompileConstrutors()
+        private string CompileConstrutors(string actionType)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader(), new {0}Writer())", _modelType, _actionType).AppendLine();
-            sb.AppendLine("         { }").AppendLine();
-            sb.AppendFormat("         public {0}{1}Action (I{0}Reader reader, I{0}Writer writer)", _modelType, _actionType).AppendLine();
-            sb.AppendLine("         {");
-            sb.AppendLine("           _reader = reader;");
-            sb.AppendLine("           _writer = writer;");
-            sb.AppendLine("         }");
+
+            switch (actionType.ToLower())
+            {
+                case "post":
+                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Writer())", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         { }").AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Writer writer)", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         {");
+                    sb.AppendLine("           _writer = writer;");
+                    sb.AppendLine("         }");
+                    break;
+                case "put":
+                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader(), new {0}Writer())", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         { }").AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader, {0}Writer writer)", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         {");
+                    sb.AppendLine("           _reader = reader;");
+                    sb.AppendLine("           _writer = writer;");
+                    sb.AppendLine("         }");
+                    break;
+                case "get":
+                                        sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader())", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         { }").AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader)", _modelType, _actionType).AppendLine();
+                    sb.AppendLine("         {");
+                    sb.AppendLine("           _reader = reader;");
+                    sb.AppendLine("         }");
+                    break;
+            }
+
+
+
+
+
             return sb.ToString();
         }
 
@@ -119,7 +167,7 @@ namespace ApiGeneratorApi.Generator
         {
             var sb = new StringBuilder();
             sb.AppendFormat("         {0}int Write({1} data)", isConcrete ? "public " : "", _modelType);
-            
+
             if (isConcrete)
             {
                 sb.AppendLine();
@@ -138,7 +186,7 @@ namespace ApiGeneratorApi.Generator
         {
             var sb = new StringBuilder();
             sb.AppendFormat("         {0}int WriteById(int Id {1} data)", isConcrete ? "public " : "", _modelType);
-            
+
             if (isConcrete)
             {
                 sb.AppendLine();
@@ -161,7 +209,7 @@ namespace ApiGeneratorApi.Generator
             {
                 sb.AppendLine();
                 sb.AppendLine("         {");
-                sb.AppendLine("             return _reder.Get(Id);");
+                sb.AppendLine("             return _reader.GetById(Id);");
                 sb.AppendLine("         }");
             }
             else
@@ -179,7 +227,7 @@ namespace ApiGeneratorApi.Generator
             {
                 sb.AppendLine();
                 sb.AppendLine("         {");
-                sb.AppendLine("             return _reder.GetAll();");
+                sb.AppendLine("             return _reader.GetAll();");
                 sb.AppendLine("         }");
             }
             else

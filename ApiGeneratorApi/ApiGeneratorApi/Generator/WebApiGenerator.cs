@@ -63,10 +63,10 @@ namespace ApiGeneratorApi.Generator
             var builder = new StringBuilder();
 
             builder.AppendLine("using System.Web.Http;");
-            builder.AppendLine("using Giftango.Domain.Models;");
             builder.AppendLine("using Giftango.Domain.Actions;");
+            builder.AppendLine("using Giftango.Domain.Models;");
             builder.AppendLine();
-            builder.Append("namespace Giftango.Web.Admin.Pages").AppendLine();
+            builder.Append("namespace DemoApi.Controllers").AppendLine();
             builder.AppendLine("{");
             builder.AppendFormat("    public class {0}Controller : ApiController",
                 modelType);
@@ -103,7 +103,9 @@ namespace ApiGeneratorApi.Generator
             builder.AppendFormat("            var bl = new {0}GetAction();",
                 modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
-            builder.AppendLine("            return Ok(id == null? bl.GetAll(): bl.Get(id);");
+            builder.AppendLine("            if (id == null)");
+            builder.AppendLine("                return Ok(bl.GetAll());");
+            builder.AppendLine("            return Ok(bl.Get(id.Value));");
             builder.AppendLine("        }");
 
             return builder.ToString();
@@ -161,7 +163,7 @@ namespace ApiGeneratorApi.Generator
 
             builder.AppendLine("using System.Web.Http;");
             builder.AppendLine();
-            builder.AppendLine("namespace ApiGeneratorApi");
+            builder.AppendLine("namespace DemoApi");
             builder.AppendLine("{");
             builder.AppendLine("    public static class WebApiConfig");
             builder.AppendLine("    {");

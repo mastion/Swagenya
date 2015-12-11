@@ -1,15 +1,15 @@
+using DemoApi.DataAccess;
 using Giftango.Domain.Models;
-using Giftango.Domain.Reader;
 using Giftango.Domain.Writer;
 
 namespace Giftango.Domain.Actions
 {
      public interface IDrinkUpdateAction
      {
-         readonly IDrinkReader _reader;
-         readonly IDrinkWriter _writer;
+        readonly IDrinkReader _reader;
+        readonly IDrinkWriter _writer;
 
-         int WriteById(int Id Drink data);
+        int WriteById(int Id, Drink data);
      }
 
      public class DrinkUpdateAction : IDrinkUpdateAction
@@ -26,7 +26,7 @@ namespace Giftango.Domain.Actions
            _writer = writer;
          }
 
-         public int WriteById(int Id Drink data)
+         public int WriteById(int Id, Drink data)
          {
              return _writer.Write(Id, data);
          }
