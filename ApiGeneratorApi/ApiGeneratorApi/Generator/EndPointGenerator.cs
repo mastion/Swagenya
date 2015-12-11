@@ -1,6 +1,6 @@
-﻿using ApiGeneratorApi.Generator;
+﻿using ApiGeneratorApi.Models;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Generator
 {
     public class EndPointGenerator
     {
@@ -16,8 +16,7 @@ namespace ApiGeneratorApi.Models
             var modelGenerator = new ModelGenerator(_endpointSpec);
             modelGenerator.Generate();
             string modelType = modelGenerator.GetType();
-            new AngularGenerator(_endpointSpec, modelType).Generate();
-            new BusinessLogicGenerator(_endpointSpec, modelType).Generate();
+            new ActionGenerator(_endpointSpec, modelType).Generate();
             new DataAccessGenerator(_endpointSpec, modelType).Generate();
             new StoredProcGenerator(_endpointSpec, modelType).Generate();
             new TestGenerator(_endpointSpec, modelType).Generate();
