@@ -66,7 +66,7 @@ namespace ApiGeneratorApi.Generator
             builder.AppendLine("using Giftango.Domain.Models;");
             builder.AppendLine("using Giftango.Domain.Actions;");
             builder.AppendLine();
-            builder.AppendFormat("namespace Giftango.Web.Admin.Pages.{0}",modelType).AppendLine();
+            builder.Append("namespace Giftango.Web.Admin.Pages").AppendLine();
             builder.AppendLine("{");
             builder.AppendFormat("    public class {0}Controller : ApiController",
                 modelType);
@@ -120,7 +120,7 @@ namespace ApiGeneratorApi.Generator
             builder.AppendLine("        {");
             builder.AppendFormat("          var tmpId = new {0}PostAction().Write(data);", modelType);
             builder.AppendLine();
-            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tempId));", modelType);
+            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tmpId));", modelType);
             builder.AppendLine();
             builder.AppendLine("        }");
 
