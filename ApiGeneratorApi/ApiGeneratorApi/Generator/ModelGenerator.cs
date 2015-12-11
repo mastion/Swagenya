@@ -1,7 +1,8 @@
 using System.Text;
+using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Generator
 {
     public class ModelGenerator
     {

@@ -1,4 +1,6 @@
-﻿namespace ApiGeneratorApi.Models
+﻿using ApiGeneratorApi.Models;
+
+namespace ApiGeneratorApi.Generator
 {
     public class TestGenerator
     {
