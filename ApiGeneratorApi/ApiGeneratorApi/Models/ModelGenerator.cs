@@ -1,6 +1,4 @@
-using System.IO;
 using System.Text;
-using System.Web.Configuration;
 using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
@@ -36,7 +34,7 @@ namespace ApiGeneratorApi.Models
             
             sb.AppendLine("namespace Giftango.Domain.Models");
             sb.AppendLine("{");
-            sb.AppendFormat("   public class {0}", GetType()); sb.AppendLine();
+            sb.AppendFormat("   public class {0}", GetType()).AppendLine();
             sb.AppendLine("     {");
             sb.Append(WriteProperties());
             sb.AppendLine("     }");
