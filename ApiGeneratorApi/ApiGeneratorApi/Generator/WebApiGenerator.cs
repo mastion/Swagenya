@@ -62,7 +62,7 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine("using System.Web.Http;");
             builder.AppendLine("using Giftango.Domain.Models;");
-            builder.AppendLine("using Giftango.Domain.BusinessLogic;");
+            builder.AppendLine("using Giftango.Domain.Actions;");
             builder.AppendLine();
             builder.AppendFormat("namespace Giftango.Web.Admin.Pages.{0}",modelType).AppendLine();
             builder.AppendLine("{");
