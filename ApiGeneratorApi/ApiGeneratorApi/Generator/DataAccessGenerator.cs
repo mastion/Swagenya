@@ -30,7 +30,7 @@ namespace ApiGeneratorApi.Models
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using Dapper;");
             sb.AppendLine("using Giftango.Component.Utility;");
-            sb.AppendLine("namespace Giftango.Domain.Reader");
+            sb.AppendLine("namespace Giftango.Domain.Writer");
             sb.AppendLine("{");
                 sb.AppendFormat("   public class {0}Writer", _modelType).AppendLine();
                 sb.AppendLine("   {");
