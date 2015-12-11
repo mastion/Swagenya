@@ -1,6 +1,4 @@
-using System.IO;
 using System.Text;
-using System.Web.Configuration;
 using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
@@ -26,7 +24,7 @@ namespace ApiGeneratorApi.Models
         public void Generate()
         {
             CompileData();
-            new FileWriter().WriteFile(FilePath, _data);
+            _fileWriter.WriteFile(FilePath, _data);
         }
 
         private void CompileData()

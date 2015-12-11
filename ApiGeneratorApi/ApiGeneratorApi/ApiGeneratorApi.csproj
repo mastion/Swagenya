@@ -86,7 +86,7 @@
     <Compile Include="Generator\AngularGenerator.cs" />
     <Compile Include="Models\ApiSpecification.cs" />
     <Compile Include="Generator\BusinessLogicGenerator.cs" />
-    <Compile Include="Models\DataAccessGenerator.cs" />
+    <Compile Include="Generator\DataAccessGenerator.cs" />
     <Compile Include="Generator\EndPointGenerator.cs" />
     <Compile Include="Util\FileWriter.cs" />
     <Compile Include="Generator\ModelGenerator.cs" />
