@@ -1,22 +1,28 @@
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Web.UI.WebControls;
+using ApiGeneratorApi.Util;
 
 namespace ApiGeneratorApi.Models
 {
     public class WebApiGenerator
     {
-        public readonly string FilePath;
         private readonly List<EndpointSpec> _apiSpecification;
+        private readonly IFileWriter _fileWriter;
+        private readonly string _outputDirectory;
 
-        public WebApiGenerator(EndpointSpec apiSpecification)
+        public WebApiGenerator(EndpointSpec apiSpecification) : this(new List<EndpointSpec> {apiSpecification})
         {
-            _apiSpecification.Add(apiSpecification);
         }
 
         public WebApiGenerator(List<EndpointSpec> apiSpecification)
         {
+            _fileWriter = new FileWriter();
             _apiSpecification = apiSpecification;
+            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "c#");
         }
 
         public void Generate()
@@ -38,12 +44,14 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine(GenerateControllerHeader(modelType));
 
-            foreach (var endpointSpec in apiSpecification)
+            foreach (EndpointSpec endpointSpec in apiSpecification)
             {
                 builder.AppendLine(GenerateVerb(endpointSpec.HttpVerb, modelType));
             }
 
             builder.AppendLine(GenerateControllerFooter());
+
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.cs", _outputDirectory, modelType), builder.ToString());
         }
 
         private static string GenerateControllerHeader(string modelType)
@@ -84,9 +92,11 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine("        [HttpGet]");
-            builder.AppendLine("        public IHttpActionResult Index()");
+            builder.AppendLine("        public IHttpActionResult Index(int? id)");
             builder.AppendLine("        {");
-            builder.AppendLine("            return Ok();");
+            builder.AppendFormat("            var bl = new {0}BusinessLogic();", modelType);
+            builder.AppendLine();
+            builder.AppendLine("            return Ok(id == null? bl.GetAll(): bl.Get(id);");
             builder.AppendLine("        }");
 
             return builder.ToString();
@@ -101,7 +111,10 @@ namespace ApiGeneratorApi.Models
             builder.AppendFormat("        public IHttpActionResult Generate({0} data)", modelType);
             builder.AppendLine();
             builder.AppendLine("        {");
-            builder.AppendLine("            return Ok(data);");
+            builder.AppendFormat("          var tmpId = new {0}BusinessLogic().Write(data);", modelType);
+            builder.AppendLine();
+            builder.AppendFormat("            return Ok(new {0}BusinessLogic().Get(tempId));", modelType);
+            builder.AppendLine();
             builder.AppendLine("        }");
 
             return builder.ToString();
@@ -131,6 +144,8 @@ namespace ApiGeneratorApi.Models
             }
 
             builder.AppendLine(GenerateWebConfigFooter());
+
+            _fileWriter.WriteFile(String.Format(@"{0}\WebApiConfig.cs", _outputDirectory), builder.ToString());
         }
 
         private static string GenerateWebConfigHeader()
