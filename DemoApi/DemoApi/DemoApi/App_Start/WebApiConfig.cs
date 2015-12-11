@@ -1,4 +1,6 @@
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Routing;
 
 namespace DemoApi
 {
@@ -12,8 +14,8 @@ namespace DemoApi
             config.MapHttpAttributeRoutes();
 
 
-            config.Routes.MapHttpRoute("drink", "api/{controller}/{action}");
-            config.Routes.MapHttpRoute("extra", "api/{controller}/{action}");
+            config.Routes.MapHttpRoute("drink", "api/{controller}", new { httpMethod = new HttpMethodConstraint(HttpMethod.Get) });
+            config.Routes.MapHttpRoute("extra", "api/{controller}", new { httpMethod = new HttpMethodConstraint(HttpMethod.Get) });
         }
     }
 }

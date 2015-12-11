@@ -8,7 +8,7 @@ namespace DemoApi.Controllers
     {
 
         [HttpGet]
-        public IHttpActionResult Get(int? id)
+        public IHttpActionResult Get(int? id = null)
         {
             var bl = new DrinkGetAction();
             if (id == null)

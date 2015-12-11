@@ -148,7 +148,7 @@ namespace ApiGeneratorApi.Generator
             foreach (var spec in _apiSpecification.GroupBy(x => x.Uri))
             {
                 builder.AppendFormat("            config.Routes.MapHttpRoute(\"{0}\", ", spec.First().Uri);
-                builder.Append("\"api/{controller}/{action}\");");
+                builder.Append("\"api/{controller}\"), new {httpMethod = new HttpMethodConstraint(HttpMethod.Get)};");
                 builder.AppendLine();
             }
 
