@@ -53,10 +53,9 @@ namespace ApiGeneratorApi.Models
         private string CompileObject(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("   public {0}{1}{2}", isConcrete? "class " : "interface i", _modelType, ClassSuffix);
+            sb.AppendFormat("     public {0}{1}{2}", isConcrete? "class " : "interface I", _modelType, ClassSuffix);
             sb.AppendLine(isConcrete? string.Format(" : I{0}{1}", _modelType, ClassSuffix): ""); //Inherit from interface if isConcrete
-            sb.AppendLine();
-            sb.AppendLine("{");
+            sb.AppendLine("     {");
             sb.AppendLine(CompileProperties(isConcrete));
             sb.AppendLine();
             
@@ -67,58 +66,64 @@ namespace ApiGeneratorApi.Models
             sb.AppendLine(CompileReadFunction(isConcrete));
             sb.AppendLine(CompileWriteFunction(isConcrete));
 
-            sb.AppendLine("}");
+            sb.AppendLine("     }");
             return sb.ToString();
         }
 
         private string CompileProperties(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat(" {0}readonly I{1}Reader _reader;", isConcrete ? "private " : "", _modelType);
-            sb.AppendFormat(" {0}readonly I{1}Writer _writer;", isConcrete ? "private " : "", _modelType);
+            sb.AppendFormat("         {0}readonly I{1}Reader _reader;", isConcrete ? "private " : "", _modelType);
+            sb.AppendLine();
+            sb.AppendFormat("         {0}readonly I{1}Writer _writer;", isConcrete ? "private " : "", _modelType);
             return sb.ToString();
         }
 
         private string CompileConstrutors()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("       public {0}{1}() : this(new {0}Reader(), new {0}Writer())", _modelType, ClassSuffix);
-            sb.AppendLine("{}");
-            sb.AppendFormat("       public {0}{1}() (I{0}Reader reader, I{0}Writer writer)", _modelType, ClassSuffix);
-            sb.AppendLine(" {");
-            sb.AppendLine("         _reader = reader;");
-            sb.AppendLine("         _writer = writer;");
-            sb.AppendLine("     }");
+            sb.AppendFormat("         public {0}{1}() : this(new {0}Reader(), new {0}Writer())", _modelType, ClassSuffix);
+            sb.AppendLine();
+            sb.AppendLine("         { }");
+            sb.AppendFormat("         public {0}{1}() (I{0}Reader reader, I{0}Writer writer)", _modelType, ClassSuffix);
+            sb.AppendLine();
+            sb.AppendLine("         {");
+            sb.AppendLine("           _reader = reader;");
+            sb.AppendLine("           _writer = writer;");
+            sb.AppendLine("         }");
             return sb.ToString();
         }
 
         private string CompileWriteFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("       {0}int Write({1} data)", isConcrete? "public " : "", _modelType);
-            sb.AppendLine("{");
+            sb.AppendFormat("         {0}int Write({1} data)", isConcrete? "public " : "", _modelType);
+            sb.AppendLine();
+            sb.AppendLine("         {");
             sb.AppendLine("             return _writer.Write(data);");
-            sb.AppendLine("}");
+            sb.AppendLine("         }");
             return sb.ToString();
         }
 
         private string CompileReadFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("       {0}{1} Get(int Id)", isConcrete ? "public " : "", _modelType);
-            sb.AppendLine("{");
+            sb.AppendFormat("         {0}{1} Get(int Id)", isConcrete ? "public " : "", _modelType);
+            sb.AppendLine();
+            sb.AppendLine("         {");
             sb.AppendLine("             return _reder.Get(Id);");
-            sb.AppendLine("}");
+            sb.AppendLine("         }");
             return sb.ToString();
         }
 
         private string CompileReadAllFunction(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("       {0}List<{1}> GetAll()", isConcrete ? "public " : "", _modelType);
-            sb.AppendLine("{");
+            sb.AppendFormat("         {0}List<{1}> GetAll()", isConcrete ? "public " : "", _modelType);
+            sb.AppendLine();
+            sb.AppendLine("         {");
             sb.AppendLine("             return _reder.GetAll();");
-            sb.AppendLine("}");
+            sb.AppendLine("         }");
             return sb.ToString();
         }
     }

@@ -35,11 +35,12 @@ namespace ApiGeneratorApi.Models
             var sb = new StringBuilder();
             
             sb.AppendLine("namespace Giftango.Domain.Models");
+            sb.AppendLine("{");
             sb.AppendFormat("   public class {0}", GetType()); sb.AppendLine();
-            sb.AppendLine(" {");
-            sb.AppendLine(WriteProperties());
+            sb.AppendLine("     {");
+            sb.Append(WriteProperties());
+            sb.AppendLine("     }");
             sb.AppendLine(" }");
-            sb.AppendLine("}");
 
             _data = sb.ToString();
         }
@@ -55,7 +56,7 @@ namespace ApiGeneratorApi.Models
             {   
                 foreach (var myBody in myProperty.Body)
                 {
-                    sb.AppendFormat(" public {0} {1} ", myBody.Type, myBody.Name);
+                    sb.AppendFormat("       public {0} {1} ", myBody.Type, myBody.Name);
                     sb.AppendLine("{ get; set; }");
                 }                
             }
