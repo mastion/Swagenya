@@ -415,6 +415,7 @@
     <Compile Include="Controllers\GeneratorController.cs" />
     <Compile Include="Controllers\SpecLoader.cs" />
     <Compile Include="Generator\ActionGenerator.cs" />
+    <Compile Include="Generator\StoredProcGenerator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
