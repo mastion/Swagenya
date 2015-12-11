@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
+using ApiGeneratorApi.Generator;
 using ApiGeneratorApi.Models;
 
 namespace ApiGeneratorApi.Controllers

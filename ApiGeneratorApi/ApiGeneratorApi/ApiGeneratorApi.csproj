@@ -414,12 +414,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\GeneratorController.cs" />
     <Compile Include="Controllers\SpecLoader.cs" />
+    <Compile Include="Generator\ActionGenerator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Generator\AngularGenerator.cs" />
     <Compile Include="Models\ApiSpecification.cs" />
-    <Compile Include="Generator\BusinessLogicGenerator.cs" />
     <Compile Include="Generator\DataAccessGenerator.cs" />
     <Compile Include="Generator\EndPointGenerator.cs" />
     <Compile Include="Util\FileWriter.cs" />
@@ -431,9 +431,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="edge\x64\edge.node">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="node_modules\raml-parser\test\raml-files\traitsAtResourceLevel.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -624,6 +621,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="edge\x86\edge.node">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="edge\x64\edge.node">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Web.Debug.config">
