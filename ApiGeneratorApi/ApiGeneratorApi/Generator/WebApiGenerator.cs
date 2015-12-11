@@ -39,6 +39,7 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             var modelType = apiSpecification.First(x => x.Uri != null).Uri;
+            modelType = modelType.First().ToString().ToUpper() + modelType.Substring(1);
 
             builder.AppendLine(GenerateControllerHeader(modelType));
 
@@ -62,10 +63,10 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine("using System.Web.Http;");
             builder.AppendLine("using Giftango.Domain.Models;");
             builder.AppendLine();
-            builder.AppendLine("namespace Giftango.Domain.Controllers");
+            builder.AppendFormat("namespace Giftango.Web.Admin.Pages.{0}",modelType).AppendLine();
             builder.AppendLine("{");
             builder.AppendFormat("    public class {0}Controller : ApiController",
-                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+                modelType);
             builder.AppendLine();
             builder.AppendLine("    {");
 
@@ -94,7 +95,7 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine("        [HttpGet]");
-            builder.AppendLine("        public IHttpActionResult Index(int? id)");
+            builder.AppendLine("        public IHttpActionResult Get(int? id)");
             builder.AppendLine("        {");
             builder.AppendFormat("            var bl = new {0}BusinessLogic();",
                 modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
@@ -110,7 +111,7 @@ namespace ApiGeneratorApi.Models
             var builder = new StringBuilder();
 
             builder.AppendLine("        [HttpPost]");
-            builder.AppendFormat("        public IHttpActionResult Generate({0} data)",
+            builder.AppendFormat("        public IHttpActionResult Post({0} data)",
                 modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("        {");

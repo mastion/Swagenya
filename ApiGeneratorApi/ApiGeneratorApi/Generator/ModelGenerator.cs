@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web.Configuration;
 using ApiGeneratorApi.Util;
@@ -21,7 +22,7 @@ namespace ApiGeneratorApi.Models
 
         public new string GetType()
         {
-            return _apiSpecification.Uri;
+            return string.Format("{0}{1}",_apiSpecification.Uri[0].ToString().ToUpper(), _apiSpecification.Uri.Substring(1));
         }
 
         public void Generate()
