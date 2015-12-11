@@ -9,10 +9,10 @@ namespace ApiGeneratorApi.Generator
 {
     public class AngularGenerator
     {
-        private readonly string _outputDirectory;
-        private readonly string _modelType;
         private readonly IEnumerable<EndpointSpec> _endpointSpecifications;
         private readonly IFileWriter _fileWriter;
+        private readonly string _modelType;
+        private readonly string _outputDirectory;
 
         public AngularGenerator(IEnumerable<EndpointSpec> endpoints)
         {
@@ -28,7 +28,6 @@ namespace ApiGeneratorApi.Generator
             GenerateAngularService(); //GOOD except we need to figure out the URL from URI
             GenerateAngularController(); //GOOD
             GenerateAngularModel();
-
         }
 
         private void GenerateAngularModel()
@@ -36,8 +35,11 @@ namespace ApiGeneratorApi.Generator
             var builder = new StringBuilder();
             builder.AppendLine(String.Format("function {0}(data){{", _modelType));
             builder.AppendLine(String.Format("  if (!data){{")); //SOOO JANKY
-            var defaultRequestFields = _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0) ??
-                                       _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0);
+            var defaultRequestFields =
+                _endpointSpecifications.FirstOrDefault(
+                    p => String.Compare(p.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0) ??
+                _endpointSpecifications.FirstOrDefault(
+                    p => String.Compare(p.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0);
             if (defaultRequestFields != null)
             {
                 //Definitely janky here
@@ -103,7 +105,6 @@ namespace ApiGeneratorApi.Generator
                                                      "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
                                                      "      }});\n" +
                                                      "  }};", _modelType));
-
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "PUT", StringComparison.OrdinalIgnoreCase) == 0)
                 {
@@ -131,11 +132,14 @@ namespace ApiGeneratorApi.Generator
 
 
             builder.AppendLine(String.Format("}};"));
-            builder.AppendLine(String.Format("angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);", _modelType));
+            builder.AppendLine(
+                String.Format(
+                    "angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);",
+                    _modelType));
 
 
-
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType),
+                builder.ToString());
         }
 
         private void GenerateAngularService()
@@ -188,7 +192,6 @@ namespace ApiGeneratorApi.Generator
             builder.AppendLine(String.Format("}}"));
             builder.AppendLine(String.Format("angular.module('{0}').service('{0}Service', ['$http', {0}Service]);",
                 _modelType));
-
 
 
             _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType), builder.ToString());

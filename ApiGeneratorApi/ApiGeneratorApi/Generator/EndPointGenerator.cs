@@ -15,7 +15,7 @@ namespace ApiGeneratorApi.Generator
         {
             var modelGenerator = new ModelGenerator(_endpointSpec);
             modelGenerator.Generate();
-            string modelType = modelGenerator.GetType();
+            var modelType = modelGenerator.GetType();
             new ActionGenerator(_endpointSpec, modelType).Generate();
             new DataAccessGenerator(_endpointSpec, modelType).Generate();
             new StoredProcGenerator(_endpointSpec, modelType).Generate();

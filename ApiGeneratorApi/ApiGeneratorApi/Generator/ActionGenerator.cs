@@ -1,4 +1,4 @@
-using System.IO;
+using System.Globalization;
 using System.Text;
 using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
@@ -8,12 +8,12 @@ namespace ApiGeneratorApi.Generator
     public class ActionGenerator
     {
         //private readonly EndpointSpec _apiSpecification;
-        private string _data;
 
         public readonly string FilePath;
-        private readonly string _modelType;
-        private readonly FileWriter _fileWriter;
         private readonly string _actionType;
+        private readonly FileWriter _fileWriter;
+        private readonly string _modelType;
+        private string _data;
 
         public ActionGenerator(EndpointSpec apiSpecification, string modelType)
         {
@@ -22,9 +22,10 @@ namespace ApiGeneratorApi.Generator
 
             //Formatting
             _actionType = apiSpecification.HttpVerb.ToLower();
-            _actionType = _actionType[0].ToString().ToUpper() + _actionType.Substring(1);
+            _actionType = _actionType[0].ToString(CultureInfo.InvariantCulture).ToUpper() + _actionType.Substring(1);
 
-            FilePath = string.Format("{0}/{1}Action.cs", new FolderWriter().GetFolderName(string.Format("{0}Actions", _modelType)), _actionType);
+            FilePath = string.Format("{0}/{1}Action.cs",
+                new FolderWriter().GetFolderName(string.Format("{0}Actions", _modelType)), _actionType);
             _fileWriter = new FileWriter();
         }
 
@@ -59,8 +60,10 @@ namespace ApiGeneratorApi.Generator
         private string CompileObject(bool isConcrete)
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("     public {0}{1}{2}Action", isConcrete ? "class " : "interface I", _modelType, _actionType);
-            sb.AppendLine(isConcrete ? string.Format(" : I{0}{1}Action", _modelType, _actionType) : ""); //Inherit from interface if isConcrete
+            sb.AppendFormat("     public {0}{1}{2}Action", isConcrete ? "class " : "interface I", _modelType,
+                _actionType);
+            sb.AppendLine(isConcrete ? string.Format(" : I{0}{1}Action", _modelType, _actionType) : "");
+                //Inherit from interface if isConcrete
             sb.AppendLine("     {");
 
             if (isConcrete)
@@ -117,9 +120,6 @@ namespace ApiGeneratorApi.Generator
             }
 
 
-
-
-
             return sb.ToString();
         }
 
@@ -130,34 +130,37 @@ namespace ApiGeneratorApi.Generator
             switch (actionType.ToLower())
             {
                 case "post":
-                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Writer())", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Writer())", _modelType, _actionType)
+                        .AppendLine();
                     sb.AppendLine("         { }").AppendLine();
-                    sb.AppendFormat("         public {0}{1}Action ({0}Writer writer)", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Writer writer)", _modelType, _actionType)
+                        .AppendLine();
                     sb.AppendLine("         {");
                     sb.AppendLine("           _writer = writer;");
                     sb.AppendLine("         }");
                     break;
                 case "put":
-                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader(), new {0}Writer())", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader(), new {0}Writer())",
+                        _modelType, _actionType).AppendLine();
                     sb.AppendLine("         { }").AppendLine();
-                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader, {0}Writer writer)", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader, {0}Writer writer)", _modelType,
+                        _actionType).AppendLine();
                     sb.AppendLine("         {");
                     sb.AppendLine("           _reader = reader;");
                     sb.AppendLine("           _writer = writer;");
                     sb.AppendLine("         }");
                     break;
                 case "get":
-                                        sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader())", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader())", _modelType, _actionType)
+                        .AppendLine();
                     sb.AppendLine("         { }").AppendLine();
-                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader)", _modelType, _actionType).AppendLine();
+                    sb.AppendFormat("         public {0}{1}Action ({0}Reader reader)", _modelType, _actionType)
+                        .AppendLine();
                     sb.AppendLine("         {");
                     sb.AppendLine("           _reader = reader;");
                     sb.AppendLine("         }");
                     break;
             }
-
-
-
 
 
             return sb.ToString();

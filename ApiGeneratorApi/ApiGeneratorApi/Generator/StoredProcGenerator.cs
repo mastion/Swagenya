@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Linq;
 using System.Text;
 using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
@@ -8,8 +7,8 @@ namespace ApiGeneratorApi.Generator
 {
     public class StoredProcGenerator
     {
-        private EndpointSpec _endpointSpec;
-        private string _modelType;
+        private readonly EndpointSpec _endpointSpec;
+        private readonly string _modelType;
         //private List<string> _crudList;
 
         public StoredProcGenerator(EndpointSpec endpointSpec, string modelType)
@@ -47,12 +46,9 @@ namespace ApiGeneratorApi.Generator
         private string ModelParamList()
         {
             var sb = new StringBuilder();
-            foreach (var responseSpec in _endpointSpec.Responses)
+            foreach (var payloadFieldSpec in _endpointSpec.Responses.SelectMany(responseSpec => responseSpec.Body))
             {
-                foreach (var payloadFieldSpec in responseSpec.Body)
-                {
-                    sb.AppendFormat("{0},", payloadFieldSpec.Name);
-                }
+                sb.AppendFormat("{0},", payloadFieldSpec.Name);
             }
             return sb.ToString().Trim(',');
         }
@@ -60,9 +56,9 @@ namespace ApiGeneratorApi.Generator
         private string ModelParamListWithPrefix(char prefix)
         {
             var sb = new StringBuilder();
-            foreach (var responseSpec in _endpointSpec.Responses)
+            foreach (ResponseSpec responseSpec in _endpointSpec.Responses)
             {
-                foreach (var payloadFieldSpec in responseSpec.Body)
+                foreach (PayloadFieldSpec payloadFieldSpec in responseSpec.Body)
                 {
                     sb.AppendFormat("{1}{0},", payloadFieldSpec.Name, prefix);
                 }
@@ -92,7 +88,7 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine("   )");
             sb.AppendLine("AS");
             sb.AppendLine("SET NOCOUNT ON").AppendLine();
-            sb.AppendFormat("SELECT {0}",ModelParamList()).AppendLine();
+            sb.AppendFormat("SELECT {0}", ModelParamList()).AppendLine();
             sb.AppendFormat("FROM dbo.{0}", _modelType).AppendLine();
             sb.AppendLine("WHERE Id = @Id");
             sb.AppendLine("GO").AppendLine();
@@ -128,7 +124,7 @@ namespace ApiGeneratorApi.Generator
 
             foreach (var responseSpec in _endpointSpec.Responses)
             {
-                for (int i = 0; i < responseSpec.Body.Count; i++)
+                for (var i = 0; i < responseSpec.Body.Count; i++)
                 {
                     sb.AppendFormat("@{0} {1}", responseSpec.Body[i].Name, MapType(responseSpec.Body[i].Type));
                     if (i + 1 < responseSpec.Body.Count)
@@ -162,7 +158,7 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine("@Id INT,");
             foreach (var responseSpec in _endpointSpec.Responses)
             {
-                for (int i = 0; i < responseSpec.Body.Count; i++)
+                for (var i = 0; i < responseSpec.Body.Count; i++)
                 {
                     sb.AppendFormat("@{0} {1}", responseSpec.Body[i].Name, MapType(responseSpec.Body[i].Type));
                     if (i + 1 < responseSpec.Body.Count)
@@ -179,10 +175,10 @@ namespace ApiGeneratorApi.Generator
 
             sb.AppendFormat("UPDATE dbo.{0}", _modelType).AppendLine();
             sb.Append("SET");
-            
+
             foreach (var responseSpec in _endpointSpec.Responses)
             {
-                for (int i = 0; i < responseSpec.Body.Count; i++)
+                for (var i = 0; i < responseSpec.Body.Count; i++)
                 {
                     sb.AppendFormat("{0} = @{0}", responseSpec.Body[i].Name);
                     if (i + 1 < responseSpec.Body.Count)
@@ -200,10 +196,9 @@ namespace ApiGeneratorApi.Generator
             return sb.ToString();
         }
 
-        private string GenerateDelete()
+        private static string GenerateDelete()
         {
             return "";
         }
-
     }
 }

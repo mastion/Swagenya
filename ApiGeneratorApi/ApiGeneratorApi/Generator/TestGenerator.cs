@@ -13,7 +13,6 @@ namespace ApiGeneratorApi.Generator
 
         public void Generate()
         {
-            
         }
     }
 }

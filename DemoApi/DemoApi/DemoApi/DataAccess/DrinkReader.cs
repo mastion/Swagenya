@@ -1,19 +1,13 @@
 using System.Collections.Generic;
+using Giftango.Domain.Models;
 using System.Data;
 using System.Linq;
 using Dapper;
 using Giftango.Component.Utility;
-using Giftango.Domain.Models;
-
 namespace Giftango.Domain.Reader
 {
    public class DrinkReader
    {
-       public interface IDrinkReader
-       {
-           
-       }
-
       public List<Drink> GetAll()
       {
          using (var connection = ConnectionHelper.GetConnection())

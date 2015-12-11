@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using Incomm.Libraries.Cryptography;
 
 namespace Giftango.Component.Utility
 {
@@ -58,12 +57,6 @@ namespace Giftango.Component.Utility
             if (connectionString == null)
             {
                 throw new ConfigurationErrorsException(String.Format("A connection string named '{0}' could not be found.", connectionName));
-            }
-
-            // Decrypt the connection string if necessary
-            if (IsConnectionStringEncrypted)
-            {
-                connectionString = EncryptDecrypt.DecryptTripleDES(connectionString);
             }
 
             return connectionString;

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Giftango.Domain.Models;
 using System.Data;
 using System.Linq;
 using Dapper;
-using Giftango.Domain.Models;
 using Giftango.Component.Utility;
 namespace Giftango.Domain.Reader
 {
@@ -12,14 +12,14 @@ namespace Giftango.Domain.Reader
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<Extra>("[dbo].[GetAllExtra]", commandType: CommandType.StoredProcedure);
+            return connection.Query<Extra>("[dbo].[GetAllExtra]", commandType: CommandType.StoredProcedure).ToList();
          }
       }
       public Extra GetById(int id)
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<Extra>("[dbo].[GetExtra]", new {id}, commandType: CommandType.StoredProcedure);
+            return connection.Query<Extra>("[dbo].[GetExtra]", new {id}, commandType: CommandType.StoredProcedure).FirstOrDefault();
          }
       }
    }

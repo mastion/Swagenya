@@ -1,6 +1,6 @@
 using System.Web.Http;
 
-namespace ApiGeneratorApi
+namespace DemoApi
 {
     public static class WebApiConfig
     {

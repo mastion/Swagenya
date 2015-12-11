@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Raml.Parser;
 using Raml.Parser.Expressions;
 
@@ -11,7 +10,8 @@ namespace ApiGeneratorApi.Controllers
         {
             // load a RAML file
             var parser = new RamlParser();
-            var test = await parser.LoadAsync(@"C:\code\hackathon\ApiGeneratorApi\ApiGeneratorApi\APISpecs\CoffeeShop.raml");
+            var test =
+                await parser.LoadAsync(@"C:\code\hackathon\ApiGeneratorApi\ApiGeneratorApi\APISpecs\CoffeeShop.raml");
             return test;
         }
     }
