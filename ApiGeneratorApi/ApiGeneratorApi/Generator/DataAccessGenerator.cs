@@ -1,7 +1,8 @@
 ﻿using System.Text;
+using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Generator
 {
     public class DataAccessGenerator
     {
@@ -30,7 +31,7 @@ namespace ApiGeneratorApi.Models
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using Dapper;");
             sb.AppendLine("using Giftango.Component.Utility;");
-            sb.AppendLine("namespace Giftango.Domain.Reader");
+            sb.AppendLine("namespace Giftango.Domain.Writer");
             sb.AppendLine("{");
                 sb.AppendFormat("   public class {0}Writer", _modelType).AppendLine();
                 sb.AppendLine("   {");
@@ -38,20 +39,33 @@ namespace ApiGeneratorApi.Models
                 sb.AppendLine("      {");
                 sb.AppendLine("         using (var connection = ConnectionHelper.GetConnection())");
                 sb.AppendLine("         {");
-                sb.AppendFormat("            return connection.Query<int>(\"[dbo].[Insert{0}]\"", _modelType).AppendLine("new { toWrite }, commandType: CommandType.StoredProcedure);");
+                sb.AppendFormat("            return connection.Query<int>(\"[dbo].[Insert{0}]\" new {{ {1} }}, commandType: CommandType.StoredProcedure);",_modelType, ModelParamList());
                 sb.AppendLine("         }");
                 sb.AppendLine("      }").AppendLine();
                 sb.AppendFormat("      public int WriteById(int id, {0} toWrite)", _modelType).AppendLine();
                 sb.AppendLine("      {");
                 sb.AppendLine("         using (var connection = ConnectionHelper.GetConnection())");
                 sb.AppendLine("         {");
-                sb.AppendFormat("            return connection.Query<int>(\"[dbo].[Update{0}]\"", _modelType).AppendLine("new {id, toWrite}, commandType: CommandType.StoredProcedure);");
+                sb.AppendFormat("            return connection.Query<int>(\"[dbo].[Update{0}]\" new {{ id, {1}}}, commandType: CommandType.StoredProcedure);", _modelType, ModelParamList());
                 sb.AppendLine("         }");
                 sb.AppendLine("      }");
                 sb.AppendLine("   }");
             sb.AppendLine("}");
 
             return sb.ToString();
+        }
+
+        private string ModelParamList()
+        {
+            var sb = new StringBuilder();
+            foreach (var responseSpec in _apiSpecification.Responses)
+            {
+                foreach (var payloadFieldSpec in responseSpec.Body)
+                {
+                    sb.AppendFormat("toWrite.{0},", payloadFieldSpec.Name);
+                }
+            }
+            return sb.ToString().Trim(',');
         }
 
         private string GenerateReader()

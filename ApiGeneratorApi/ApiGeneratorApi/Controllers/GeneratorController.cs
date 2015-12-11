@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
+using ApiGeneratorApi.Generator;
 using ApiGeneratorApi.Models;
 
 namespace ApiGeneratorApi.Controllers
@@ -24,6 +25,7 @@ namespace ApiGeneratorApi.Controllers
             }
             
             new WebApiGenerator(endpoints).Generate();
+            new AngularGenerator(apiSpecification.Endpoints).Generate();
 
             return Ok(apiSpecification);
         }

@@ -77,7 +77,7 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine("using System.Web.Http;");
             builder.AppendLine("using Giftango.Domain.Models;");
-            builder.AppendLine("using Giftango.Domain.BusinessLogic;");
+            builder.AppendLine("using Giftango.Domain.Actions;");
             builder.AppendLine();
             builder.AppendFormat("namespace Giftango.Web.Admin.Pages.{0}",modelType).AppendLine();
             builder.AppendLine("{");
@@ -113,7 +113,7 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine("        [HttpGet]");
             builder.AppendLine("        public IHttpActionResult Get(int? id)");
             builder.AppendLine("        {");
-            builder.AppendFormat("            var bl = new {0}BusinessLogic();",
+            builder.AppendFormat("            var bl = new {0}GetAction();",
                 modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("            return Ok(id == null? bl.GetAll(): bl.Get(id);");
@@ -131,9 +131,9 @@ namespace ApiGeneratorApi.Models
                 modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
             builder.AppendLine();
             builder.AppendLine("        {");
-            builder.AppendFormat("          var tmpId = new {0}BusinessLogic().Write(data);", modelType);
+            builder.AppendFormat("          var tmpId = new {0}PostAction().Write(data);", modelType);
             builder.AppendLine();
-            builder.AppendFormat("            return Ok(new {0}BusinessLogic().Get(tempId));", modelType);
+            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tempId));", modelType);
             builder.AppendLine();
             builder.AppendLine("        }");
 
