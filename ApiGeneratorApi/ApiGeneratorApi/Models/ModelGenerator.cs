@@ -48,9 +48,11 @@ namespace ApiGeneratorApi.Models
         {
             var sb = new StringBuilder();
 
+            if (_apiSpecification.Responses == null)
+                return "";
 
             foreach (var myProperty in _apiSpecification.Responses)
-            {
+            {   
                 foreach (var myBody in myProperty.Body)
                 {
                     sb.AppendFormat(" public {0} {1} ", myBody.Type, myBody.Name);
