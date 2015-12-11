@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
 using Raml.Parser.Expressions;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Generator
 {
     public class WebApiGenerator
     {
@@ -78,12 +79,13 @@ namespace ApiGeneratorApi.Models
         {
             var builder = new StringBuilder();
 
-            var modelType = apiSpecification.First(x => x.Uri != null).Uri;
-            modelType = modelType.First().ToString().ToUpper() + modelType.Substring(1);
+            var endpointSpecs = apiSpecification as IList<EndpointSpec> ?? apiSpecification.ToList();
+            var modelType = endpointSpecs.First(x => x.Uri != null).Uri;
+            modelType = modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1);
 
             builder.AppendLine(GenerateControllerHeader(modelType));
 
-            foreach (var endpointSpec in apiSpecification)
+            foreach (var endpointSpec in endpointSpecs)
             {
                 builder.AppendLine(GenerateVerb(endpointSpec.HttpVerb, modelType));
             }
@@ -104,7 +106,7 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine("using Giftango.Domain.Models;");
             builder.AppendLine("using Giftango.Domain.Actions;");
             builder.AppendLine();
-            builder.AppendFormat("namespace Giftango.Web.Admin.Pages.{0}",modelType).AppendLine();
+            builder.Append("namespace Giftango.Web.Admin.Pages").AppendLine();
             builder.AppendLine("{");
             builder.AppendFormat("    public class {0}Controller : ApiController",
                 modelType);
@@ -158,7 +160,7 @@ namespace ApiGeneratorApi.Models
             builder.AppendLine("        {");
             builder.AppendFormat("          var tmpId = new {0}PostAction().Write(data);", modelType);
             builder.AppendLine();
-            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tempId));", modelType);
+            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tmpId));", modelType);
             builder.AppendLine();
             builder.AppendLine("        }");
 

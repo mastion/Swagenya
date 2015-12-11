@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
 
-namespace ApiGeneratorApi.Models
+namespace ApiGeneratorApi.Generator
 {
     public class ModelGenerator
     {
