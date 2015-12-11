@@ -22,7 +22,7 @@ namespace ApiGeneratorApi.Models
         {
             _fileWriter = new FileWriter();
             _apiSpecification = apiSpecification;
-            _outputDirectory = String.Format(@"{0}\{1}", ConfigurationManager.AppSettings["OutputFolder"], "c#");
+            _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("WebApi"));
         }
 
         public void Generate()
