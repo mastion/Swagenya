@@ -28,8 +28,7 @@ namespace ApiGeneratorApi.Models
 
         public void Generate()
         {
-            foreach (
-                var endpointList in _apiSpecification.GroupBy(x => x.Uri).Select(endpointSpec => endpointSpec.ToList()))
+            foreach (var endpointList in _apiSpecification.GroupBy(x => x.Uri).ToList())
             {
                 GenerateController(endpointList);
             }
@@ -41,7 +40,7 @@ namespace ApiGeneratorApi.Models
         {
             var builder = new StringBuilder();
 
-            string modelType = _apiSpecification.First(x => x.Uri != null).Uri;
+            var modelType = apiSpecification.First(x => x.Uri != null).Uri;
 
             builder.AppendLine(GenerateControllerHeader(modelType));
 
@@ -52,7 +51,7 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine(GenerateControllerFooter());
 
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.cs", _outputDirectory, modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)), builder.ToString());
+            _fileWriter.WriteFile(String.Format(@"{0}/{1}Controller.cs", _outputDirectory, modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)), builder.ToString());
         }
 
         private static string GenerateControllerHeader(string modelType)
