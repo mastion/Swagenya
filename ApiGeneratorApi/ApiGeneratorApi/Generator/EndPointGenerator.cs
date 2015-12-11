@@ -16,7 +16,6 @@ namespace ApiGeneratorApi.Generator
             var modelGenerator = new ModelGenerator(_endpointSpec);
             modelGenerator.Generate();
             string modelType = modelGenerator.GetType();
-            new AngularGenerator(_endpointSpec, modelType).Generate();
             new ActionGenerator(_endpointSpec, modelType).Generate();
             new DataAccessGenerator(_endpointSpec, modelType).Generate();
             new TestGenerator(_endpointSpec, modelType).Generate();
