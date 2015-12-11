@@ -25,6 +25,7 @@ namespace ApiGeneratorApi.Controllers
             }
             
             new WebApiGenerator(endpoints).Generate();
+            new AngularGenerator(apiSpecification.Endpoints).Generate();
 
             return Ok(apiSpecification);
         }
