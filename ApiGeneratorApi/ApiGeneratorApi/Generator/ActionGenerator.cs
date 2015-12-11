@@ -38,9 +38,9 @@ namespace ApiGeneratorApi.Generator
         {
             var sb = new StringBuilder();
 
-            sb.AppendLine("using namespace Giftango.Domain.Models");
-            sb.AppendLine("using namespace Giftango.Domain.Readers");
-            sb.AppendLine("using namespace Giftango.Domain.Writers");
+            sb.AppendLine("using Giftango.Domain.Models;");
+            sb.AppendLine("using Giftango.Domain.Reader;");
+            sb.AppendLine("using Giftango.Domain.Writer;");
             sb.AppendLine();
             sb.AppendLine("namespace Giftango.Domain.Actions");
             sb.AppendLine("{"); //start namespace
@@ -107,7 +107,7 @@ namespace ApiGeneratorApi.Generator
             var sb = new StringBuilder();
             sb.AppendFormat("         public {0}{1}Action() : this(new {0}Reader(), new {0}Writer())", _modelType, _actionType).AppendLine();
             sb.AppendLine("         { }").AppendLine();
-            sb.AppendFormat("         public {0}{1}Action() (I{0}Reader reader, I{0}Writer writer)", _modelType, _actionType).AppendLine();
+            sb.AppendFormat("         public {0}{1}Action (I{0}Reader reader, I{0}Writer writer)", _modelType, _actionType).AppendLine();
             sb.AppendLine("         {");
             sb.AppendLine("           _reader = reader;");
             sb.AppendLine("           _writer = writer;");
