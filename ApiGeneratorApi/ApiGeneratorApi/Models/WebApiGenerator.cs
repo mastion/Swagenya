@@ -104,7 +104,6 @@ namespace ApiGeneratorApi.Models
 
         private static string PostEndpoint(string modelType)
         {
-            //todo: Casing on object
             var builder = new StringBuilder();
 
             builder.AppendLine("        [HttpPost]");
@@ -136,9 +135,9 @@ namespace ApiGeneratorApi.Models
 
             builder.AppendLine(GenerateWebConfigHeader());
 
-            foreach (var uri in _apiSpecification.GroupBy(x => x.Uri))
+            foreach (var spec in _apiSpecification.GroupBy(x => x.Uri))
             {
-                builder.AppendFormat("            config.Routes.MapHttpRoute(\"{0}\", ", uri);
+                builder.AppendFormat("            config.Routes.MapHttpRoute(\"{0}\", ", spec.First().Uri);
                 builder.Append("\"api/{controller}/{action}\");");
                 builder.AppendLine();
             }
