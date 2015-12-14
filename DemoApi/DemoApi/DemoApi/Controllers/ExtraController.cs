@@ -10,8 +10,8 @@ namespace DemoApi.Controllers
         [HttpPost]
         public IHttpActionResult Post(Extra data)
         {
-          var tmpId = new ExtraPostAction().Write(data);
-            return Ok(new ExtraGetAction().Get(tmpId));
+            new ExtraPostAction().Write(data);
+            return Ok(data);
         }
 
 

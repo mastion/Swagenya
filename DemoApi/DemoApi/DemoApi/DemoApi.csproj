@@ -151,6 +151,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="ConnectionHelper.cs" />
     <Compile Include="Controllers\DrinkController.cs" />
+    <Compile Include="Controllers\ExtraController.cs" />
     <Compile Include="DataAccess\DrinkReader.cs" />
     <Compile Include="DataAccess\DrinkWriter.cs" />
     <Compile Include="DataAccess\ExtraReader.cs" />
