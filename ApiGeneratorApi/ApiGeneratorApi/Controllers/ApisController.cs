@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using System.Web.Http;
 using ApiGeneratorApi.AMLMappers;
 using ApiGeneratorApi.Generator;
@@ -27,19 +28,20 @@ namespace ApiGeneratorApi.Controllers
         [HttpPost]
         public async Task<IHttpActionResult> Generate(string id)
         {
-            var pathToOutputDirectory = "path to output directory";
+            var pathToOutputDirectory = WebConfigurationManager.AppSettings["OutputFolder"];
 
             var apiSpec = await new SpecLoader().Load(id);
             var mapper = new RAMLMapper(apiSpec);
 
             new ModelGenerator(mapper.GetResourceSpecs()).Generate();
-            new WebApiGenerator((List<ResourceSpec>) mapper.GetResourceSpecs()).Generate2();
-            new ActionGenerator(mapper.GetResourceSpecs()).Generate();
-            new TestGenerator(mapper.GetResourceSpecs()).Generate();
-            new DataAccessGenerator(mapper.GetResourceSpecs()).Generate();
-
+            //new WebApiGenerator((List<ResourceSpec>) mapper.GetResourceSpecs()).Generate2();
+            //new ActionGenerator(mapper.GetResourceSpecs()).Generate();
+            //new TestGenerator(mapper.GetResourceSpecs()).Generate();
+            //new DataAccessGenerator(mapper.GetResourceSpecs()).Generate();
+            //new StoredProcGenerator(mapper.GetResourceSpecs()).Generate();
             //new AngularGenerator(mapper.GetResourceSpecs()).Generate();
-            return Ok(pathToOutputDirectory);
+
+            return Ok(mapper.GetResourceSpecs());
         }
 
     }

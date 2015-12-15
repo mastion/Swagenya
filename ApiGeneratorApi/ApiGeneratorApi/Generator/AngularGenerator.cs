@@ -10,43 +10,43 @@ namespace ApiGeneratorApi.Generator
     public class AngularGenerator
     {
         private readonly string _outputDirectory;
-        private readonly string _modelType;
         private readonly IEnumerable<EndpointSpec> _endpointSpecifications;
         private readonly IFileWriter _fileWriter;
+        private IEnumerable<ResourceSpec> _resources;
 
-        public AngularGenerator(IEnumerable<EndpointSpec> endpoints)
+        public AngularGenerator(IEnumerable<ResourceSpec> resources)
         {
             _fileWriter = new FileWriter();
-            _endpointSpecifications = endpoints;
-            _modelType = new ModelGenerator(endpoints.FirstOrDefault()).GetType();
+            _resources = resources;
             _outputDirectory = String.Format(@"{0}", new FolderWriter().GetFolderName("js"));
         }
 
         public void Generate()
         {
-            GenerateAngularApp(); //GOOD
-            GenerateAngularService(); //GOOD except we need to figure out the URL from URI
-            GenerateAngularController(); //GOOD
-            GenerateAngularModel();
-
+            foreach (var resourceSpec in _resources)
+            {
+                GenerateAngularApp(resourceSpec); //GOOD
+                GenerateAngularService(resourceSpec); //GOOD except we need to figure out the URL from URI
+                GenerateAngularController(resourceSpec); //GOOD
+                GenerateAngularModel(resourceSpec);  
+            }
         }
 
-        private void GenerateAngularModel()
+        private void GenerateAngularModel(ResourceSpec resourceSpec)
         {
             var builder = new StringBuilder();
-            builder.AppendLine(String.Format("function {0}(data){{", _modelType));
+            builder.AppendLine(String.Format("function {0}(data){{", resourceSpec.ResourceName));
             builder.AppendLine(String.Format("  if (!data){{")); //SOOO JANKY
-            var defaultRequestFields = _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0) ??
-                                       _endpointSpecifications.FirstOrDefault(p => String.Compare(p.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0);
+            var defaultRequestFields = resourceSpec.GetModel;
             if (defaultRequestFields != null)
             {
                 //Definitely janky here
-                foreach (var property in defaultRequestFields.Request)
+                foreach (var property in defaultRequestFields)
                 {
                     builder.AppendLine(String.Format("      this.{0} = null;", property.Name));
                 }
                 builder.AppendLine(String.Format("  }}"));
-                foreach (var property in defaultRequestFields.Request)
+                foreach (var property in defaultRequestFields)
                 {
                     builder.AppendLine(String.Format("  this.{0} = data.{0} || null;", property.Name));
                 }
@@ -61,34 +61,34 @@ namespace ApiGeneratorApi.Generator
                                              "      }});\n" +
                                              "  }}\n" +
                                              "  return {0}s;\n" +
-                                             "}}", _modelType));
+                                             "}}", resourceSpec.ResourceName));
 
-            builder.AppendLine(String.Format("angular.module('{0}').value('{0}', {0}).value('{0}s', {0}s);", _modelType));
+            builder.AppendLine(String.Format("angular.module('{0}').value('{0}', {0}).value('{0}s', {0}s);", resourceSpec.ResourceName));
 
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}.js", _outputDirectory, _modelType), builder.ToString());
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}.js", _outputDirectory, resourceSpec.ResourceName), builder.ToString());
         }
 
-        private void GenerateAngularController()
+        private void GenerateAngularController(ResourceSpec resourceSpec)
         {
             var builder = new StringBuilder();
 
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}Controller($scope, {0}Service) {{", _modelType));
+            builder.AppendLine(String.Format("function {0}Controller($scope, {0}Service) {{", resourceSpec.ResourceName));
 
             foreach (var endpointSpec in _endpointSpecifications)
             {
                 if (String.Compare(endpointSpec.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  $scope.add{0} = function() {{", _modelType));
-                    builder.AppendLine(String.Format("      {0}Service", _modelType));
-                    builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", _modelType));
+                    builder.AppendLine(String.Format("  $scope.add{0} = function() {{", resourceSpec.ResourceName));
+                    builder.AppendLine(String.Format("      {0}Service", resourceSpec.ResourceName));
+                    builder.AppendLine(String.Format("          .add{0}($scope.{0}ToAdd)", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("          .then(function (response) {{"));
                     builder.AppendLine(String.Format("              $scope.current{0}s.push(new {0}(response.data);",
-                        _modelType));
-                    builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", _modelType));
+                        resourceSpec.ResourceName));
+                    builder.AppendLine(String.Format("              $scope.{0}ToAdd = {{}}", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("          }}, function (error) {{"));
                     builder.AppendLine(String.Format("              $scope.ErrorMessage = 'Error adding the new {0}';",
-                        _modelType));
+                        resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("          }});"));
                     builder.AppendLine(String.Format("  }};"));
                 }
@@ -102,7 +102,7 @@ namespace ApiGeneratorApi.Generator
                                                      "      }}, function (error){{\n" +
                                                      "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
                                                      "      }});\n" +
-                                                     "  }};", _modelType));
+                                                     "  }};", resourceSpec.ResourceName));
 
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "PUT", StringComparison.OrdinalIgnoreCase) == 0)
@@ -114,7 +114,7 @@ namespace ApiGeneratorApi.Generator
                                                      "      }}, function(error){{\n" +
                                                      "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
                                                      "      }});\n" +
-                                                     "  }};", _modelType));
+                                                     "  }};", resourceSpec.ResourceName));
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "DELETE", StringComparison.OrdinalIgnoreCase) == 0)
                 {
@@ -125,60 +125,60 @@ namespace ApiGeneratorApi.Generator
                                                      "      }}, function(error){{\n" +
                                                      "          $scope.ErrorMessage = error.data.ExceptionMessage;\n" +
                                                      "      }});\n" +
-                                                     "  }};", _modelType));
+                                                     "  }};", resourceSpec.ResourceName));
                 }
             }
 
 
             builder.AppendLine(String.Format("}};"));
-            builder.AppendLine(String.Format("angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);", _modelType));
+            builder.AppendLine(String.Format("angular.module('{0}').controller('{0}Controller', ['$scope', '{0}Service', {0}Controller]);", resourceSpec.ResourceName));
 
 
 
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, _modelType), builder.ToString());
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Controller.js", _outputDirectory, resourceSpec.ResourceName), builder.ToString());
         }
 
-        private void GenerateAngularService()
+        private void GenerateAngularService(ResourceSpec resourceSpec)
         {
             var builder = new StringBuilder();
             builder.AppendLine(String.Format("'use strict'"));
-            builder.AppendLine(String.Format("function {0}Service($http) {{", _modelType));
+            builder.AppendLine(String.Format("function {0}Service($http) {{", resourceSpec.ResourceName));
 
-            foreach (var endpointSpec in _endpointSpecifications)
+            foreach (var endpointSpec in resourceSpec.Endpoints)
             {
                 if (String.Compare(endpointSpec.HttpVerb, "POST", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  this.add{0} = function ({0}) {{", _modelType));
+                    builder.AppendLine(String.Format("  this.add{0} = function ({0}) {{", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      return $http({{"));
                     builder.AppendLine(String.Format("          url: '{0}',", endpointSpec.Uri));
                     builder.AppendLine(String.Format("          method: '{0}',", endpointSpec.HttpVerb));
-                    builder.AppendLine(String.Format("          data: {0}", _modelType));
+                    builder.AppendLine(String.Format("          data: {0}", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      }});"));
                     builder.AppendLine(String.Format("  }};"));
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "GET", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  this.get{0}s = function () {{", _modelType));
+                    builder.AppendLine(String.Format("  this.get{0}s = function () {{", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      return $http.get('{0}');", endpointSpec.Uri));
                     builder.AppendLine(String.Format("  }};"));
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "PUT", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  this.update{0} = function({0}) {{", _modelType));
+                    builder.AppendLine(String.Format("  this.update{0} = function({0}) {{", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      return $http({{"));
                     builder.AppendLine(String.Format("          url: '{0}',", endpointSpec.Uri));
                     builder.AppendLine(String.Format("          method: 'PUT',"));
-                    builder.AppendLine(String.Format("          data: {0}", _modelType));
+                    builder.AppendLine(String.Format("          data: {0}", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      }});"));
                     builder.AppendLine(String.Format("  }}"));
                 }
                 if (String.Compare(endpointSpec.HttpVerb, "DELETE", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    builder.AppendLine(String.Format("  this.delete{0} = function({0}) {{", _modelType));
+                    builder.AppendLine(String.Format("  this.delete{0} = function({0}) {{", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      return $http({{"));
                     builder.AppendLine(String.Format("          url: '{0}',", endpointSpec.Uri));
                     builder.AppendLine(String.Format("          method: 'DELETE',"));
-                    builder.AppendLine(String.Format("          params: {0}", _modelType));
+                    builder.AppendLine(String.Format("          params: {0}", resourceSpec.ResourceName));
                     builder.AppendLine(String.Format("      }});"));
                     builder.AppendLine(String.Format("  }}"));
                 }
@@ -187,24 +187,19 @@ namespace ApiGeneratorApi.Generator
 
             builder.AppendLine(String.Format("}}"));
             builder.AppendLine(String.Format("angular.module('{0}').service('{0}Service', ['$http', {0}Service]);",
-                _modelType));
+                resourceSpec.ResourceName));
 
 
 
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, _modelType), builder.ToString());
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}Service.js", _outputDirectory, resourceSpec.ResourceName), builder.ToString());
         }
 
-        private void GenerateAngularApp()
+        private void GenerateAngularApp(ResourceSpec resourceSpec)
         {
             var sb = new StringBuilder();
             sb.AppendLine("'use strict'");
-            sb.AppendLine(String.Format("angular.module('{0}', []);", _modelType));
-            _fileWriter.WriteFile(String.Format(@"{0}\{1}App.js", _outputDirectory, _modelType), sb.ToString());
-        }
-
-        public void Generate2()
-        {
-            throw new NotImplementedException();
+            sb.AppendLine(String.Format("angular.module('{0}', []);", resourceSpec.ResourceName));
+            _fileWriter.WriteFile(String.Format(@"{0}\{1}App.js", _outputDirectory, resourceSpec.ResourceName), sb.ToString());
         }
     }
 }

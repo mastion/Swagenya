@@ -10,6 +10,7 @@ version: v1
       200:
         body:
           application/json:
+            schema: drink
             example: |
               "drinks": [
                 {
@@ -39,7 +40,7 @@ version: v1
           }
 
     responses:
-      200:
+      201:
         body:
           application/json:
             example: |
@@ -64,18 +65,21 @@ schemas:
         "$schema": "http://json-schema.org/draft-03/schema",
         "id": "http://jsonschema.net",
         "required": true,
-        "properties": {
-          "name": {
+        "properties": [
+          {
+            "name": "name",
             "type": "string",
             "required": true
           },
-          "size": {
+          {
+            "name": "size",
             "type": "string",
             "required": true
           },
-          "price": {
+          {
+            "name": "price",
             "type": "decimal",
             "required": true
           }
-        }
+        ]
       }
