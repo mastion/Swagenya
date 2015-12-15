@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace ApiGeneratorApi.Models
@@ -23,18 +22,18 @@ namespace ApiGeneratorApi.Models
         public string Uri { get; set; }
         public string HttpVerb { get; set; }
         public List<PayloadFieldSpec> Request { get; set; }
-        public List<ResponseSpec> Responses { get; set; } 
+        public List<ResponseSpec> Responses { get; set; }
     }
 
     public class ResponseSpec
     {
         public int StatusCode { get; set; }
-        public List<PayloadFieldSpec> Body { get; set; } 
+        public List<PayloadFieldSpec> Body { get; set; }
     }
 
     public class PayloadFieldSpec
     {
-        public string Name{ get; set; }
+        public string Name { get; set; }
         public string Type { get; set; }
     }
 }

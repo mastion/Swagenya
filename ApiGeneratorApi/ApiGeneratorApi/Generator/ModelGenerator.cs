@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using ApiGeneratorApi.Models;
@@ -29,7 +30,7 @@ namespace ApiGeneratorApi.Generator
 
         public new string GetType()
         {
-            return string.Format("{0}{1}",_apiSpecification.Uri[0].ToString().ToUpper(), _apiSpecification.Uri.Substring(1));
+            return string.Format("{0}{1}",_apiSpecification.Uri[0].ToString(CultureInfo.InvariantCulture).ToUpper(), _apiSpecification.Uri.Substring(1));
         }
 
         public void Generate()

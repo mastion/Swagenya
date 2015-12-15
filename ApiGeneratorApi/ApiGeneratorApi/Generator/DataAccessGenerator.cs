@@ -16,7 +16,6 @@ namespace ApiGeneratorApi.Generator
         {
             _apiSpecification = apiSpecification;
             _modelType = modelType;
-
         }
 
         public DataAccessGenerator(IEnumerable<ResourceSpec> resourceSpecs)
@@ -43,6 +42,7 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using Dapper;");
             sb.AppendLine("using Giftango.Component.Utility;");
+            sb.AppendLine("using Giftango.Domain.Models;");
             sb.AppendLine("namespace Giftango.Domain.Writer");
             sb.AppendLine("{");
                 sb.AppendFormat("   public class {0}Writer", resourceName).AppendLine();
@@ -80,6 +80,8 @@ namespace ApiGeneratorApi.Generator
         private string GenerateReader(string resourceName, string resourceObjectType, List<PayloadFieldSpec> resource)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using Giftango.Domain.Models;");
             sb.AppendLine("using System.Data;");
             sb.AppendLine("using System.Linq;");
             sb.AppendLine("using Dapper;");
@@ -107,6 +109,5 @@ namespace ApiGeneratorApi.Generator
 
             return sb.ToString();
         }
-
     }
 }

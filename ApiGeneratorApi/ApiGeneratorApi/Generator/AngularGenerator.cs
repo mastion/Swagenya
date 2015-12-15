@@ -9,10 +9,10 @@ namespace ApiGeneratorApi.Generator
 {
     public class AngularGenerator
     {
-        private readonly string _outputDirectory;
         private readonly IEnumerable<EndpointSpec> _endpointSpecifications;
         private readonly IFileWriter _fileWriter;
         private IEnumerable<ResourceSpec> _resources;
+        private string _outputDirectory;
 
         public AngularGenerator(IEnumerable<ResourceSpec> resources)
         {

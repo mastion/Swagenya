@@ -17,7 +17,12 @@ namespace ApiGeneratorApi.Controllers
         {
             // load a RAML file
             var parser = new RamlParser();
+<<<<<<< HEAD
             var test = await parser.LoadAsync(GetSpecFilePath("CoffeeShop"));
+=======
+            var test =
+                await parser.LoadAsync(@"C:\code\hackathon\ApiGeneratorApi\ApiGeneratorApi\APISpecs\CoffeeShop.raml");
+>>>>>>> 1b30244e97cdd992a460f8c502347774845608f8
             return test;
         }
     }

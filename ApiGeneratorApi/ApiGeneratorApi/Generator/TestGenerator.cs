@@ -10,7 +10,6 @@ namespace ApiGeneratorApi.Models
 
         public void Generate()
         {
-            
         }
     }
 }

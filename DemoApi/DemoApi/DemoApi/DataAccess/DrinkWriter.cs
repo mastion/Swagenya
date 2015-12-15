@@ -2,6 +2,7 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using Giftango.Component.Utility;
+using Giftango.Domain.Models;
 namespace Giftango.Domain.Writer
 {
    public class DrinkWriter
@@ -10,7 +11,7 @@ namespace Giftango.Domain.Writer
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<int>("[dbo].[InsertDrink]"new { toWrite }, commandType: CommandType.StoredProcedure);
+            return connection.Query<int>("[dbo].[InsertDrink]", new { toWrite.name,toWrite.size,toWrite.price }, commandType: CommandType.StoredProcedure).FirstOrDefault();
          }
       }
 
@@ -18,7 +19,7 @@ namespace Giftango.Domain.Writer
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<int>("[dbo].[UpdateDrink]"new {id, toWrite}, commandType: CommandType.StoredProcedure);
+            return connection.Query<int>("[dbo].[UpdateDrink]", new { id, toWrite.name,toWrite.size,toWrite.price}, commandType: CommandType.StoredProcedure).FirstOrDefault();
          }
       }
    }

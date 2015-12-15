@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using System.Linq;
 using System.Text;
 using ApiGeneratorApi.Models;
@@ -197,6 +197,5 @@ namespace ApiGeneratorApi.Generator
         {
             return "";
         }
-
     }
 }

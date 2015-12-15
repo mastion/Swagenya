@@ -23,11 +23,10 @@ namespace ApiGeneratorApi.Controllers
                 new EndPointGenerator(endpoint).Generate();
                 endpoints.Add(endpoint);
             }
-            
+
             new WebApiGenerator(endpoints).Generate();
 
             return Ok(apiSpecification);
         }
-
     }
 }

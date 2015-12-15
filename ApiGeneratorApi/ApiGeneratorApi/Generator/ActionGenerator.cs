@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Globalization;
 using System.Text;
 using ApiGeneratorApi.Models;
 using ApiGeneratorApi.Util;
@@ -10,24 +10,25 @@ namespace ApiGeneratorApi.Generator
     public class ActionGenerator
     {
         //private readonly EndpointSpec _apiSpecification;
-        private string _data;
 
         public readonly string FilePath;
-        private readonly string _modelType;
-        private readonly FileWriter _fileWriter;
         private readonly string _actionType;
+        private readonly FileWriter _fileWriter;
+        private readonly string _modelType;
         private IEnumerable<ResourceSpec> _resourceSpecs;
+        private string _data;
 
         public ActionGenerator(EndpointSpec apiSpecification, string modelType)
         {
             //_apiSpecification = apiSpecification;
             _modelType = modelType;
-            
+
             //Formatting
             _actionType = apiSpecification.HttpVerb.ToLower();
-            _actionType = _actionType[0].ToString().ToUpper() + _actionType.Substring(1);
-            
-            FilePath = string.Format("{0}/{1}Action.cs", new FolderWriter().GetFolderName("Actions"), _actionType);
+            _actionType = _actionType[0].ToString(CultureInfo.InvariantCulture).ToUpper() + _actionType.Substring(1);
+
+            FilePath = string.Format("{0}/{1}Action.cs",
+                new FolderWriter().GetFolderName(string.Format("{0}Actions", _modelType)), _actionType);
             _fileWriter = new FileWriter();
         }
 
@@ -53,9 +54,10 @@ namespace ApiGeneratorApi.Generator
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using Giftango.Domain.Models;");
-            sb.AppendLine("using Giftango.Domain.Reader;");
             sb.AppendLine("using Giftango.Domain.Writer;");
+            sb.AppendLine("using Giftango.Domain.Reader;");
             sb.AppendLine();
             sb.AppendLine("namespace Giftango.Domain.Actions");
             sb.AppendLine("{"); //start namespace
@@ -176,7 +178,7 @@ namespace ApiGeneratorApi.Generator
             {
                 sb.AppendLine();
                 sb.AppendLine("         {");
-                sb.AppendLine("             return _reder.Get(Id);");
+                sb.AppendLine("             return _reader.GetById(Id);");
                 sb.AppendLine("         }");
             }
             else
@@ -194,7 +196,7 @@ namespace ApiGeneratorApi.Generator
             {
                 sb.AppendLine();
                 sb.AppendLine("         {");
-                sb.AppendLine("             return _reder.GetAll();");
+                sb.AppendLine("             return _reader.GetAll();");
                 sb.AppendLine("         }");
             }
             else

@@ -6,20 +6,20 @@ using Dapper;
 using Giftango.Component.Utility;
 namespace Giftango.Domain.Reader
 {
-   public class DrinkReader
+   public class ExtraReader
    {
-      public List<Drink> GetAll()
+      public List<Extra> GetAll()
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<Drink>("[dbo].[GetAllDrink]", commandType: CommandType.StoredProcedure).ToList();
+            return connection.Query<Extra>("[dbo].[GetAllExtra]", commandType: CommandType.StoredProcedure).ToList();
          }
       }
-      public Drink GetById(int id)
+      public Extra GetById(int id)
       {
          using (var connection = ConnectionHelper.GetConnection())
          {
-            return connection.Query<Drink>("[dbo].[GetDrink]", new {id}, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            return connection.Query<Extra>("[dbo].[GetExtra]", new {id}, commandType: CommandType.StoredProcedure).FirstOrDefault();
          }
       }
    }
