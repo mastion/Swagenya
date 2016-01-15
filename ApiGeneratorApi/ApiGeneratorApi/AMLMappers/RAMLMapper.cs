@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -28,7 +29,8 @@ namespace ApiGeneratorApi.AMLMappers
             var specs = new List<ResourceSpec>();
             foreach (var resource in _doc.Resources)
             {
-                var resourceName = resource.RelativeUri;
+                var resourceName = resource.RelativeUri.Replace("/", "");
+                resourceName = ResourceSpec.ToTitleCase(resourceName.Remove(resourceName.Length - 1, 1));
 
                 var getResponseObjectJson =
                 resource.Methods.Where(m => m.Verb.ToLower() == "get")
@@ -42,24 +44,22 @@ namespace ApiGeneratorApi.AMLMappers
                 var postResponseObjectJson =
                     resource.Methods.Where(m => m.Verb.ToLower() == "post")
                         .FirstOrDefault()
-                        .Responses.Where(resp => resp.Code == "201")
-                        .FirstOrDefault()
                         .Body.Values.FirstOrDefault().Schema;
 
                 var postModel = GetObjectFields(postResponseObjectJson);
                
                 var spec = new ResourceSpec
                 {
-                    ResourceName = resource.RelativeUri,
+                    ResourceName = resourceName,
                     ResourceObjectType = String.Format("{0}Model", resourceName),
                     GetModel = getModel,
                     PostModel = postModel,
                     Endpoints = resource.Methods.Select(m => new EndpointSpec
                     {
                         Uri = _doc.BaseUri + resource.RelativeUri,
-                        HttpVerb = m.Verb,
-                        Request = getModel,// m.Body != null && m.Body.Values.Count > 0 ?  GetObjectFields(m.Body.Values.FirstOrDefault().Schema) : new List<PayloadFieldSpec>(),
-                        Responses = m.Responses.Select(resp => new ResponseSpec { StatusCode = Int32.Parse(resp.Code), Body = postModel }).ToList() //resp.Body != null ? GetObjectFields(resp.Body.Values.FirstOrDefault().Schema) : new List<PayloadFieldSpec>()}).ToList()
+                        HttpVerb = ResourceSpec.ToTitleCase(m.Verb),
+                        Request = m.Body != null && m.Body.Values.Count > 0 ?  GetObjectFields(m.Body.Values.FirstOrDefault().Schema) : new List<PayloadFieldSpec>(),
+                        Responses = m.Responses.Select(resp => new ResponseSpec { StatusCode = Int32.Parse(resp.Code), Body = resp.Body != null && resp.Body.Values.Count > 0 ? GetObjectFields(resp.Body.Values.FirstOrDefault().Schema) : new List<PayloadFieldSpec>() }).ToList() // : new List<PayloadFieldSpec>()}).ToList()
                     }).ToList()
                 };
                 specs.Add(spec);
@@ -67,14 +67,14 @@ namespace ApiGeneratorApi.AMLMappers
             return specs;
         }
 
-        private static List<PayloadFieldSpec> GetObjectFields(string getResponseObjectJson)
+        private List<PayloadFieldSpec> GetObjectFields(string getResponseObjectJson)
         {
             if (!string.IsNullOrWhiteSpace(getResponseObjectJson))
             {
                 var getSchemaObject = JsonConvert.DeserializeObject<RamlObjectSchema>(getResponseObjectJson);
                 var getModel = getSchemaObject.Properties.Select(prop => new PayloadFieldSpec
                 {
-                    Name = prop.Name,
+                    Name = ResourceSpec.ToTitleCase(prop.Name),
                     Type = prop.Type
                 }).ToList();
                 return getModel;

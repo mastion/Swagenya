@@ -26,11 +26,7 @@ namespace ApiGeneratorApi.Generator
         public ModelGenerator(IEnumerable<ResourceSpec> resourceSpecs)
         {
             _resourceSpecs = resourceSpecs;
-        }
-
-        public new string GetType()
-        {
-            return string.Format("{0}{1}",_apiSpecification.Uri[0].ToString(CultureInfo.InvariantCulture).ToUpper(), _apiSpecification.Uri.Substring(1));
+           // FilePath = string.Format("{0}/{1}.cs", new FolderWriter().GetFolderName("Model"), GetType());
         }
 
         public void Generate()
@@ -40,12 +36,35 @@ namespace ApiGeneratorApi.Generator
                 var resourceName = resource.ResourceName;
                 foreach (var endPoint in resource.Endpoints)
                 {
-                    var methodName = endPoint.HttpVerb;
-                    CompileData(String.Format("{0}{1}Model", methodName, resourceName), endPoint.Request);
-                    new FileWriter().WriteFile(FilePath, _data);
+                    var methodName = ResourceSpec.ToTitleCase(endPoint.HttpVerb);
+                    var modelName = String.Format("{0}{1}Model", methodName, resourceName);
+                    if (endPoint.Request.Count > 0)
+                    {
+                        GenereateModelFile(modelName, GetFilePath(modelName), endPoint.Request);
+                    }
+
+                    foreach (var response in endPoint.Responses)
+                    {
+                        if (response.Body.Count > 0)
+                        {
+                            modelName = String.Format("{0}{1}{2}Model", methodName, response.StatusCode, resourceName);
+                            GenereateModelFile(modelName, GetFilePath(modelName), response.Body);
+                        }
+                    }
                 }
                
             }
+        }
+
+        private string GetFilePath(string modelName)
+        {
+            return string.Format("{0}{1}.cs", new FolderWriter().GetFolderName("Model"), modelName);
+        }
+
+        private void GenereateModelFile(string modelName, string filePath, List<PayloadFieldSpec> modelFields)
+        {
+            CompileData(modelName, modelFields);
+            new FileWriter().WriteFile(filePath, _data);
         }
 
         private void CompileData(string modelName, List<PayloadFieldSpec> modelFields)

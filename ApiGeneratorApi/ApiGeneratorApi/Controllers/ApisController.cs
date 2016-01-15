@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Http;
@@ -33,9 +34,10 @@ namespace ApiGeneratorApi.Controllers
             var apiSpec = await new SpecLoader().Load(id);
             var mapper = new RAMLMapper(apiSpec);
 
-            new ModelGenerator(mapper.GetResourceSpecs()).Generate();
-            //new WebApiGenerator((List<ResourceSpec>) mapper.GetResourceSpecs()).Generate2();
-            //new ActionGenerator(mapper.GetResourceSpecs()).Generate();
+            var resourceSpecifications = mapper.GetResourceSpecs().ToList();
+            new ModelGenerator(resourceSpecifications).Generate();
+            new WebApiGenerator(resourceSpecifications).Generate2();
+            new ActionGenerator(resourceSpecifications).Generate();
             //new TestGenerator(mapper.GetResourceSpecs()).Generate();
             //new DataAccessGenerator(mapper.GetResourceSpecs()).Generate();
             //new StoredProcGenerator(mapper.GetResourceSpecs()).Generate();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ApiGeneratorApi.Models
 {
@@ -15,6 +16,10 @@ namespace ApiGeneratorApi.Models
         public List<EndpointSpec> Endpoints { get; set; }
         public List<PayloadFieldSpec> GetModel { get; set; }
         public List<PayloadFieldSpec> PostModel { get; set; }
+        public static string ToTitleCase(string value)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value);
+        }
     }
 
     public class EndpointSpec

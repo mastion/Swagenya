@@ -16,15 +16,15 @@ namespace ApiGeneratorApi.Controllers
         [HttpPost]
         public IHttpActionResult Generate(ApiSpecification apiSpecification)
         {
-            var endpoints = new List<EndpointSpec>();
+            //var endpoints = new List<EndpointSpec>();
 
-            foreach (var endpoint in apiSpecification.Endpoints)
-            {
-                new EndPointGenerator(endpoint).Generate();
-                endpoints.Add(endpoint);
-            }
+            //foreach (var endpoint in apiSpecification.Endpoints)
+            //{
+            //    new EndPointGenerator(endpoint).Generate();
+            //    endpoints.Add(endpoint);
+            //}
 
-            new WebApiGenerator(endpoints).Generate();
+            //new WebApiGenerator(endpoints).Generate();
 
             return Ok(apiSpecification);
         }

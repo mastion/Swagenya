@@ -13,7 +13,7 @@ namespace ApiGeneratorApi.Generator
 
         public readonly string FilePath;
         private readonly string _actionType;
-        private readonly FileWriter _fileWriter;
+        private readonly FileWriter _fileWriter = new FileWriter();
         private readonly string _modelType;
         private IEnumerable<ResourceSpec> _resourceSpecs;
         private string _data;
@@ -29,7 +29,6 @@ namespace ApiGeneratorApi.Generator
 
             FilePath = string.Format("{0}/{1}Action.cs",
                 new FolderWriter().GetFolderName(string.Format("{0}Actions", _modelType)), _actionType);
-            _fileWriter = new FileWriter();
         }
 
         public ActionGenerator(IEnumerable<ResourceSpec> resourceSpecs)
@@ -45,7 +44,6 @@ namespace ApiGeneratorApi.Generator
                 foreach (var endPoint in resourceSpec.Endpoints)
                 {
                     CompileData(endPoint.HttpVerb, resourceName);
-                    _fileWriter.WriteFile(FilePath, _data);
                 }
             }
         }
@@ -62,6 +60,8 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine("namespace Giftango.Domain.Actions");
             sb.AppendLine("{"); //start namespace
 
+            var actionName = String.Format("{0}{1}Action", httpVerb, resourceName);
+
             //Interface
             sb.AppendLine(CompileObject(false, httpVerb, resourceName));
             //Concrete implementation
@@ -70,6 +70,10 @@ namespace ApiGeneratorApi.Generator
             sb.AppendLine("}"); //end namespace
 
             _data = sb.ToString();
+
+            var filePath = string.Format("{0}/{1}.cs",
+              new FolderWriter().GetFolderName(string.Format("{0}Actions", resourceName)), actionName);
+            _fileWriter.WriteFile(filePath, _data);
         }
 
         private string CompileObject(bool isConcrete, string httpVerb, string resourceName)

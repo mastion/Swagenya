@@ -82,6 +82,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="APISpecs\InternalApi.raml" />
     <None Include="APISpecs\CoffeeShop.raml" />
     <Content Include="edge\double_edge.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -408,6 +409,10 @@
     <Content Include="node_modules\raml-parser\test\specs\validator.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\JsonModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>JsonModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -425,6 +430,11 @@
     <Compile Include="Models\ApiSpecification.cs" />
     <Compile Include="Generator\DataAccessGenerator.cs" />
     <Compile Include="Generator\EndPointGenerator.cs" />
+    <Compile Include="Templates\JsonModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>JsonModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Util\FileWriter.cs" />
     <Compile Include="Generator\ModelGenerator.cs" />
     <Compile Include="Generator\TestGenerator.cs" />
@@ -638,6 +648,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

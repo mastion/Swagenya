@@ -50,28 +50,27 @@ namespace ApiGeneratorApi.Generator
             foreach (var resource in _resources)
             {
                 GenerateController(resource);
+                GenerateWebApiConfig(resource);
             }
-
-            GenerateWebApiConfig();
         }
 
         private void GenerateController(ResourceSpec resource)
         {
             var builder = new StringBuilder();
-            var modelType = resource.ResourceName;
+            var controllerName = String.Format("{0}s", resource.ResourceName);
 
-            builder.AppendLine(GenerateControllerHeader(modelType));
+            builder.AppendLine(GenerateControllerHeader(controllerName));
 
             foreach (var endpointSpec in resource.Endpoints)
             {
-                builder.AppendLine(GenerateVerb(endpointSpec.HttpVerb, modelType));
+                builder.AppendLine(GenerateVerb(endpointSpec.HttpVerb, resource.ResourceName));
             }
 
             builder.AppendLine(GenerateControllerFooter());
 
             _fileWriter.WriteFile(
                 String.Format(@"{0}/{1}Controller.cs", _outputDirectory,
-                    modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1)),
+                    controllerName),
                 builder.ToString());
         }
 
@@ -120,7 +119,7 @@ namespace ApiGeneratorApi.Generator
         {
             var builder = new StringBuilder();
 
-            switch (verb)
+            switch (verb.ToLower())
             {
                 case "get":
                     builder.AppendLine(GetEndpoint(modelType));
@@ -141,7 +140,7 @@ namespace ApiGeneratorApi.Generator
             builder.AppendLine("        public IHttpActionResult Get(int? id)");
             builder.AppendLine("        {");
             builder.AppendFormat("            var bl = new {0}GetAction();",
-                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+                modelType);
             builder.AppendLine();
             builder.AppendLine("            if (id == null)");
             builder.AppendLine("                return Ok(bl.GetAll());");
@@ -157,12 +156,12 @@ namespace ApiGeneratorApi.Generator
 
             builder.AppendLine("        [HttpPost]");
             builder.AppendFormat("        public IHttpActionResult Post({0} data)",
-                modelType.First().ToString(CultureInfo.InvariantCulture).ToUpper() + modelType.Substring(1));
+                modelType);
             builder.AppendLine();
             builder.AppendLine("        {");
-            builder.AppendFormat("          var tmpId = new {0}PostAction().Write(data);", modelType);
+            builder.AppendFormat("          var tmpId = new {0}PostAction().Execute(data);", modelType);
             builder.AppendLine();
-            builder.AppendFormat("            return Ok(new {0}GetAction().Get(tmpId));", modelType);
+            builder.AppendFormat("            return Created(new {0}GetAction().Execute(tmpId));", modelType);
             builder.AppendLine();
             builder.AppendLine("        }");
 
@@ -177,6 +176,24 @@ namespace ApiGeneratorApi.Generator
             builder.AppendLine("}");
 
             return builder.ToString();
+        }
+
+        private void GenerateWebApiConfig(ResourceSpec resource)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine(GenerateWebConfigHeader());
+
+            foreach (var endPoint in resource.Endpoints)
+            {
+                builder.AppendFormat("            config.Routes.MapHttpRoute(\"{0}\", ", endPoint.Uri);
+                builder.Append(String.Format("\"api/{{controller}}\"), new {{httpMethod = new HttpMethodConstraint(HttpMethod.{0})}};", endPoint.HttpVerb));
+                builder.AppendLine();
+            }
+
+            builder.AppendLine(GenerateWebConfigFooter());
+
+            _fileWriter.WriteFile(String.Format(@"{0}\WebApiConfig.cs", _outputDirectory), builder.ToString());
         }
 
         private void GenerateWebApiConfig()
